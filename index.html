@@ -1,17 +1,1628 @@
--- Avatars
-create policy "Avatar public access"
-    on storage.objects for select
-    using (bucket_id = 'avatars');
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Matilha - Adestramento Canino</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(5, 150, 105, 0.5);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .star-rating {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .star {
+            font-size: 2.5rem;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .star.filled {
+            color: #fbbf24;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        
+        .star:hover {
+            transform: scale(1.2);
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            50% { box-shadow: 0 0 0 20px rgba(16, 185, 129, 0); }
+        }
+        
+        @keyframes celebrate {
+            0% { transform: scale(0) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+            100% { transform: scale(1) rotate(360deg); opacity: 1; }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .animate-slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .animate-celebrate {
+            animation: celebrate 0.6s ease-out;
+        }
+        
+        .animate-shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .pulse-ring {
+            animation: pulse-glow 2s infinite;
+        }
+        
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.5s ease;
+        }
+        
+        .locked-overlay {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+        }
+        
+        .timer-display {
+            font-variant-numeric: tabular-nums;
+            font-feature-settings: "tnum";
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #fbbf24;
+            position: absolute;
+            animation: confetti-fall 3s ease-out forwards;
+            z-index: 9999;
+        }
+        
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        .dog-avatar {
+            transition: all 0.3s ease;
+        }
+        
+        .dog-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        .pilar-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .pilar-card:hover {
+            border-color: #10b981;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pilar-card.locked {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .input-field {
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .input-field:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            outline: none;
+        }
+        
+        .camera-preview {
+            background: #1f2937;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .floating-action {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 50;
+        }
+        
+        .tab-active {
+            color: #059669;
+            border-bottom: 3px solid #059669;
+        }
+        
+        .level-badge {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
+        }
+        
+        .streak-flame {
+            animation: flicker 1.5s ease-in-out infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.8; transform: scale(1.05); }
+        }
+        
+        .hidden-screen {
+            display: none !important;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            animation: scaleIn 0.5s ease-out;
+        }
+        
+        @keyframes scaleIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .checkmark-path {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawCheck 0.6s ease-out 0.3s forwards;
+        }
+        
+        @keyframes drawCheck {
+            to { stroke-dashoffset: 0; }
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #10b981;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1f2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 9999;
+            font-size: 14px;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .toast.error {
+            background: #ef4444;
+        }
+        
+        .toast.success {
+            background: #10b981;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
 
-create policy "Users can upload own avatar"
-    on storage.objects for insert
-    with check (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
 
--- Dog photos
-create policy "Dog photos public access"
-    on storage.objects for select
-    using (bucket_id = 'dog-photos');
+    <!-- TELA DE LOGIN -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="glass-panel rounded-3xl p-8 w-full max-w-md shadow-2xl animate-slide-in">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+                    <i data-lucide="dog" class="w-12 h-12 text-white"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">A Matilha</h1>
+                <p class="text-gray-600">Adestramento diário do seu melhor amigo</p>
+            </div>
+            
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+                    <input type="email" id="login-email" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="seu@email.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                    <input type="password" id="login-password" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="••••••••">
+                </div>
+                <button type="submit" id="login-btn" class="btn-primary w-full py-4 rounded-xl text-white font-semibold text-lg flex items-center justify-center gap-2">
+                    <span>Entrar</span>
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-gray-600">Não tem conta? <button onclick="showScreen('register-screen')" class="text-green-600 font-semibold hover:underline">Cadastre-se</button></p>
+            </div>
+        </div>
+    </div>
 
-create policy "Users can upload own dog photos"
-    on storage.objects for insert
-    with check (bucket_id = 'dog-photos' AND auth.uid()::text = (storage.foldername(name))[1]);
+    <!-- TELA DE CADASTRO -->
+    <div id="register-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
+        <div class="glass-panel rounded-3xl p-8 w-full max-w-md shadow-2xl">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Criar Conta</h2>
+                <p class="text-gray-600 text-sm">Comece sua jornada de adestramento</p>
+            </div>
+            
+            <form id="register-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome de Usuário *</label>
+                    <input type="text" id="reg-username" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="@seunome" pattern="[a-zA-Z0-9_]+" title="Apenas letras, números e underline">
+                    <p class="text-xs text-gray-500 mt-1">Este será seu identificador único (apenas letras, números e _)</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+                    <input type="email" id="reg-email" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="seu@email.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                    <input type="password" id="reg-password" required minlength="6" class="input-field w-full px-4 py-3 rounded-xl" placeholder="Mínimo 6 caracteres">
+                </div>
+                <button type="submit" id="register-btn" class="btn-primary w-full py-4 rounded-xl text-white font-semibold text-lg flex items-center justify-center gap-2">
+                    <span>Criar Conta</span>
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <button onclick="showScreen('login-screen')" class="text-gray-600 hover:text-gray-900">
+                    <i data-lucide="arrow-left" class="w-4 h-4 inline mr-1"></i> Voltar para login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA PRINCIPAL (DASHBOARD) -->
+    <div id="main-screen" class="hidden-screen min-h-screen pb-24">
+        <!-- Header -->
+        <header class="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-40">
+            <div class="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <img id="user-avatar" src="https://ui-avatars.com/api/?name=User&background=10b981&color=fff" class="w-10 h-10 rounded-full border-2 border-white shadow-md object-cover">
+                        <button onclick="editProfile()" class="absolute -bottom-1 -right-1 bg-green-500 text-white p-1 rounded-full shadow-md">
+                            <i data-lucide="camera" class="w-3 h-3"></i>
+                        </button>
+                    </div>
+                    <div>
+                        <p class="text-white/80 text-xs">Bem-vindo,</p>
+                        <p id="username-display" class="text-white font-bold">@usuario</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="text-white/80 hover:text-white">
+                    <i data-lucide="log-out" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Loading State -->
+        <div id="main-loading" class="hidden max-w-md mx-auto px-4 py-8 text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-white">Carregando sua matilha...</p>
+        </div>
+
+        <!-- Content -->
+        <div id="main-content">
+            <!-- Seleção de Cão -->
+            <div class="max-w-md mx-auto px-4 py-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-white text-xl font-bold">Sua Matilha</h2>
+                    <button onclick="showAddDogModal()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-sm font-medium transition">
+                        <i data-lucide="plus" class="w-4 h-4 inline mr-1"></i> Adicionar
+                    </button>
+                </div>
+                
+                <div id="dogs-list" class="flex gap-4 overflow-x-auto pb-4 snap-x">
+                    <!-- Cães serão inseridos aqui -->
+                </div>
+                
+                <div id="empty-dogs" class="hidden text-center py-8">
+                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i data-lucide="dog" class="w-8 h-8 text-white/60"></i>
+                    </div>
+                    <p class="text-white/80 text-sm">Nenhum cão cadastrado ainda</p>
+                    <button onclick="showAddDogModal()" class="mt-2 text-white underline text-sm">Adicione seu primeiro cão</button>
+                </div>
+            </div>
+
+            <!-- Progresso do Cão Selecionado -->
+            <div id="dog-progress" class="max-w-md mx-auto px-4 mb-6 hidden">
+                <div class="glass-panel rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 id="selected-dog-name" class="text-xl font-bold text-gray-900"></h3>
+                            <p id="selected-dog-breed" class="text-sm text-gray-600"></p>
+                        </div>
+                        <div class="level-badge text-white px-3 py-1 rounded-full text-sm font-bold">
+                            Nível <span id="dog-level">1</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-3 mb-4">
+                        <div class="text-center p-3 bg-green-50 rounded-xl">
+                            <p class="text-2xl font-bold text-green-600" id="completed-trainings">0</p>
+                            <p class="text-xs text-gray-600">Treinos</p>
+                        </div>
+                        <div class="text-center p-3 bg-yellow-50 rounded-xl">
+                            <p class="text-2xl font-bold text-yellow-600" id="current-streak">0</p>
+                            <p class="text-xs text-gray-600">Dias Seguidos</p>
+                        </div>
+                        <div class="text-center p-3 bg-blue-50 rounded-xl">
+                            <p class="text-2xl font-bold text-blue-600" id="total-stars">0</p>
+                            <p class="text-xs text-gray-600">Estrelas</p>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div id="level-progress" class="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pilares de Treino -->
+            <div class="max-w-md mx-auto px-4 pb-8">
+                <h2 class="text-white text-xl font-bold mb-4">Pilares de Treino</h2>
+                <p class="text-white/70 text-sm mb-4">Complete 1 fase de cada pilar por dia</p>
+                
+                <div class="space-y-4" id="pilares-container">
+                    <!-- Pilar 1: Siga-me -->
+                    <div class="pilar-card rounded-2xl p-5 relative overflow-hidden cursor-pointer" onclick="openPilar('siga-me')">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                                        <i data-lucide="footprints" class="w-5 h-5 text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-900">Siga-me</h3>
+                                        <p class="text-xs text-gray-500">Caminhada e atenção</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 mt-3">
+                                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                                        Fase <span id="siga-me-phase">1</span>/6
+                                    </span>
+                                    <span id="siga-me-status" class="text-xs text-gray-500">Disponível</span>
+                                </div>
+                            </div>
+                            <div id="siga-me-lock" class="hidden">
+                                <i data-lucide="lock" class="w-6 h-6 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-100">
+                            <div class="flex justify-between text-xs text-gray-600">
+                                <span>Próximo: <span id="siga-me-next">Daqui pra trás</span></span>
+                                <span class="text-green-600 font-medium" id="siga-me-stars">0★</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pilar 2: Controle de Boca -->
+                    <div class="pilar-card rounded-2xl p-5 relative overflow-hidden cursor-pointer" onclick="openPilar('controle-boca')">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
+                                        <i data-lucide="circle-dot" class="w-5 h-5 text-orange-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-900">Controle de Boca</h3>
+                                        <p class="text-xs text-gray-500">Brinquedos e comandos</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 mt-3">
+                                    <span class="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">
+                                        Fase <span id="controle-boca-phase">1</span>/6
+                                    </span>
+                                    <span id="controle-boca-status" class="text-xs text-gray-500">Disponível</span>
+                                </div>
+                            </div>
+                            <div id="controle-boca-lock" class="hidden">
+                                <i data-lucide="lock" class="w-6 h-6 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-100">
+                            <div class="flex justify-between text-xs text-gray-600">
+                                <span>Próximo: <span id="controle-boca-next">Criando interesse</span></span>
+                                <span class="text-orange-600 font-medium" id="controle-boca-stars">0★</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pilar 3: Comando Limitador -->
+                    <div class="pilar-card rounded-2xl p-5 relative overflow-hidden cursor-pointer" onclick="openPilar('comando-limitador')">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                                        <i data-lucide="timer" class="w-5 h-5 text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-900">Comando Limitador</h3>
+                                        <p class="text-xs text-gray-500">Relaxamento e cronômetro</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 mt-3">
+                                    <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                                        Nível <span id="limitador-level">1</span> • Fase <span id="limitador-phase">1</span>/6
+                                    </span>
+                                    <span id="limitador-status" class="text-xs text-gray-500">Disponível</span>
+                                </div>
+                            </div>
+                            <div id="limitador-lock" class="hidden">
+                                <i data-lucide="lock" class="w-6 h-6 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-100">
+                            <div class="flex justify-between text-xs text-gray-600">
+                                <span>Meta: <span id="limitador-time">15</span> min relaxado</span>
+                                <span class="text-blue-600 font-medium" id="limitador-stars">0★</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADICIONAR CÃO -->
+    <div id="add-dog-modal" class="hidden-screen fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-slide-in">
+            <div class="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between rounded-t-3xl">
+                <h3 class="text-xl font-bold">Novo Membro da Matilha</h3>
+                <button onclick="closeModal('add-dog-modal')" class="p-2 hover:bg-gray-100 rounded-full">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <form id="add-dog-form" class="p-6 space-y-4">
+                <div class="flex justify-center mb-4">
+                    <div class="relative">
+                        <div id="dog-photo-preview" class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+                            <i data-lucide="dog" class="w-12 h-12 text-gray-400"></i>
+                        </div>
+                        <button type="button" onclick="triggerDogPhoto()" class="absolute bottom-0 right-0 bg-green-500 text-white p-2 rounded-full shadow-lg">
+                            <i data-lucide="camera" class="w-4 h-4"></i>
+                        </button>
+                        <input type="file" id="dog-photo-input" accept="image/*" capture="environment" class="hidden" onchange="handleDogPhoto(event)">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome do Cão *</label>
+                    <input type="text" id="dog-name" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="Ex: Thor">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Raça *</label>
+                    <input type="text" id="dog-breed" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="Ex: Pastor Alemão">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Idade (anos) *</label>
+                        <input type="number" id="dog-age" required min="0" max="25" step="0.5" class="input-field w-full px-4 py-3 rounded-xl" placeholder="2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Castrado? *</label>
+                        <select id="dog-neutered" required class="input-field w-full px-4 py-3 rounded-xl">
+                            <option value="false">Não</option>
+                            <option value="true">Sim</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Microchip (opcional)</label>
+                    <input type="text" id="dog-chip" class="input-field w-full px-4 py-3 rounded-xl" placeholder="Número do chip">
+                </div>
+                
+                <button type="submit" id="add-dog-btn" class="btn-primary w-full py-4 rounded-xl text-white font-semibold text-lg mt-4 flex items-center justify-center gap-2">
+                    <span>Adicionar à Matilha</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TELA DE TREINO (PILAR) -->
+    <div id="training-screen" class="hidden-screen min-h-screen bg-white">
+        <div class="sticky top-0 bg-white border-b z-10">
+            <div class="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
+                <button onclick="closeTraining()" class="p-2 -ml-2 hover:bg-gray-100 rounded-full">
+                    <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                </button>
+                <h2 id="training-title" class="text-lg font-bold">Treino</h2>
+                <div class="w-10"></div>
+            </div>
+        </div>
+
+        <div class="max-w-md mx-auto p-4">
+            <!-- Info da Fase -->
+            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 mb-6 border border-green-100">
+                <div class="flex items-center gap-3 mb-3">
+                    <span id="training-phase-badge" class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">Fase 1</span>
+                    <span id="training-pilar-name" class="text-green-700 font-medium">Siga-me</span>
+                </div>
+                <h3 id="training-phase-title" class="text-xl font-bold text-gray-900 mb-2">Daqui pra trás</h3>
+                <p id="training-phase-desc" class="text-gray-600 text-sm leading-relaxed">
+                    O cão não deve passar o condutor, apenas ficar ao lado ou para trás...
+                </p>
+            </div>
+
+            <!-- Instruções Detalhadas -->
+            <div class="space-y-4 mb-6">
+                <h4 class="font-bold text-gray-900 flex items-center gap-2">
+                    <i data-lucide="list-checks" class="w-5 h-5 text-green-600"></i>
+                    Passo a passo
+                </h4>
+                <div id="training-steps" class="space-y-3">
+                    <!-- Passos serão inseridos aqui -->
+                </div>
+            </div>
+
+            <!-- Cronômetro (apenas para Comando Limitador) -->
+            <div id="timer-container" class="hidden mb-6">
+                <div class="bg-gray-900 rounded-3xl p-8 text-center text-white">
+                    <p class="text-gray-400 text-sm mb-2">Tempo de Relaxamento</p>
+                    <div id="timer-display" class="text-5xl font-bold font-mono mb-4 timer-display">00:00</div>
+                    <div class="flex justify-center gap-4">
+                        <button id="timer-btn" onclick="toggleTimer()" class="bg-green-500 hover:bg-green-600 text-white w-16 h-16 rounded-full flex items-center justify-center transition shadow-lg pulse-ring">
+                            <i data-lucide="play" class="w-8 h-8" id="timer-icon"></i>
+                        </button>
+                        <button onclick="resetTimer()" class="bg-gray-700 hover:bg-gray-600 text-white w-16 h-16 rounded-full flex items-center justify-center transition">
+                            <i data-lucide="rotate-ccw" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-4">Inicie apenas quando o cão estiver totalmente relaxado</p>
+                </div>
+            </div>
+
+            <!-- Botão de Conclusão -->
+            <button id="complete-btn" onclick="showRating()" class="btn-primary w-full py-4 rounded-xl text-white font-semibold text-lg flex items-center justify-center gap-2">
+                <i data-lucide="check-circle" class="w-6 h-6"></i>
+                Concluir Treino
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL: AVALIAÇÃO -->
+    <div id="rating-modal" class="hidden-screen fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-sm text-center animate-celebrate">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="star" class="w-8 h-8 text-green-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Como foi o treino?</h3>
+            <p class="text-gray-600 text-sm mb-6">Avalie o desempenho do <span id="rating-dog-name">cão</span></p>
+            
+            <div class="star-rating mb-6" id="star-container">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
+            </div>
+            
+            <p id="rating-text" class="text-sm font-medium text-gray-500 mb-6 h-6">Toque nas estrelas para avaliar</p>
+            
+            <button id="submit-rating" onclick="submitRating()" disabled class="w-full py-4 rounded-xl bg-gray-300 text-gray-500 font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">
+                Confirmar Avaliação
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL: SUCESSO -->
+    <div id="success-modal" class="hidden-screen fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-sm text-center">
+            <div class="success-checkmark mb-4">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path class="checkmark-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Excelente!</h3>
+            <p class="text-gray-600 mb-4">Treino concluído com sucesso!</p>
+            <div class="bg-yellow-50 rounded-xl p-4 mb-6">
+                <p class="text-sm text-gray-600">Você ganhou</p>
+                <p class="text-3xl font-bold text-yellow-600">+<span id="success-stars">5</span> ⭐</p>
+            </div>
+            <button onclick="closeSuccess()" class="btn-primary w-full py-3 rounded-xl text-white font-semibold">
+                Continuar
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL: BLOQUEADO -->
+    <div id="blocked-modal" class="hidden-screen fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-sm text-center">
+            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="clock" class="w-8 h-8 text-gray-400"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Treino Indisponível</h3>
+            <p class="text-gray-600 text-sm mb-4" id="blocked-message">
+                Você já realizou este treino hoje. Aguarde até amanhã para continuar.
+            </p>
+            <button onclick="closeModal('blocked-modal')" class="w-full py-3 rounded-xl bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition">
+                Entendi
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // SUPABASE CONFIGURAÇÃO
+        const SUPABASE_URL = 'https://kwnyrcrpbbhogdidnlbv.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_8nPa-MAvwOxJ8ddyN1A2bA_1sm4rw-l';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // DADOS E ESTADO
+        let currentUser = null;
+        let dogs = [];
+        let selectedDogId = null;
+        let currentTraining = null;
+        let currentRating = 0;
+        let timerInterval = null;
+        let timerSeconds = 0;
+        let timerRunning = false;
+        let requiredTimerSeconds = 0;
+
+        // DADOS DOS PILARES
+        const pilaresData = {
+            'siga-me': {
+                name: 'Siga-me',
+                icon: 'footprints',
+                color: 'green',
+                phases: [
+                    { title: 'Daqui pra trás', desc: 'O cão não deve passar o condutor, apenas ficar ao lado ou para trás. Use guia longa (5-10m). Dê um baque e mude de direção se tentar passar ou se a guia estiver acabando.', steps: ['Use guia longa ou corda de 5-10m', 'Mantenha o cão ao seu lado ou atrás', 'Se tentar passar: baque seco na guia', 'Mude de direção abruptamente', 'Mantenha local calmo e seguro'] },
+                    { title: 'Distância reduzida', desc: 'Encurtar a guia e corrigir sempre que o cão tentar correr na direção de animais ou outras distrações.', steps: ['Encurte a guia progressivamente', 'Fique atento a distrações', 'Corrija com baque seco ao tentar correr', 'Mantenha atenção total no cão', 'Não faça cabo de guerra'] },
+                    { title: 'Andando próximo e mais atento', desc: 'Cão bem próximo. Corrigir se tentar cheirar o chão. Atenção total no dono.', steps: ['Mantenha o cão muito próximo', 'Corrija se tentar cheirar o chão', 'Exija atenção total em você', 'Use correções rápidas e secas', 'Coleira comum > colar de elos > prong > e-collar'] },
+                    { title: 'Aplicando o junto', desc: 'Cão ao lado o tempo todo e atento. O dono deve dizer "JUNTO" antes de começar.', steps: ['Diga "JUNTO" antes de iniciar', 'Cão deve ficar ao lado o tempo todo', 'Mantenha atenção constante', 'Corrija desvios imediatamente', 'Reforce o comando verbal'] },
+                    { title: 'Aplicando o chamado', desc: 'Cão fica "livre" (na corda) explorando. Na hora de ir embora, chamar usando o comando "JUNTO".', steps: ['Deixe o cão explorar na corda', 'Na hora de ir: diga "JUNTO"', 'Puxe pela corda se necessário', 'Repita o comando ao chegar do lado', 'Recompense com elogio'] },
+                    { title: 'O livre', desc: 'Sempre que deixá-lo livre para explorar as redondezas, dar o comando "LIVRE".', steps: ['Diga "LIVRE" para liberar', 'Permita exploração controlada', 'Mantenha supervisão constante', 'Use "JUNTO" para recolher', 'Alterne entre livre e junto'] }
+                ]
+            },
+            'controle-boca': {
+                name: 'Controle de Boca',
+                icon: 'circle-dot',
+                color: 'orange',
+                phases: [
+                    { title: 'Criando interesse', desc: 'Mostrar o mordedor e incomodar até agarrar. Se não pegar, use gelo. Se pegar, repetir 3 vezes. Soltar com asfixia mecânica ou mostrando outro brinquedo.', steps: ['Mostre o mordedor/bolinha', 'Incomode até ele agarrar', 'Use gelo se não mostrar interesse', 'Repita 3 vezes se pegar', 'Faça soltar com asfixia mecânica'] },
+                    { title: 'Aumentando o interesse', desc: 'O cão já quer o brinquedo, realizar a ação apenas 3 vezes no dia.', steps: ['Confirme que o cão quer o brinquedo', 'Realize apenas 3 vezes no dia', 'Mantenha o interesse alto', 'Não exagere na repetição', 'Finalize enquanto quer mais'] },
+                    { title: 'Repetindo com comandos', desc: 'Corrigir para a mordida ter boca cheia no objeto. Seguir a ordem: "Cuida" > "Pega" > "Deixa".', steps: ['Diga "CUIDA" (atenção)', 'Comande "PEGA" (agarrar)', 'Ordene "DEIXA" (soltar)', 'Corrija para mordida completa', 'Reforce a sequência'] },
+                    { title: 'Busca', desc: 'Lançar a bolinha, fazer correr, trazer de volta usando os mesmos comandos da fase anterior.', steps: ['Lance a bolinha', 'Incentive a busca', 'Chame de volta', 'Use "CUIDA" > "PEGA" > "DEIXA"', 'Aumente gradativamente a distância'] },
+                    { title: 'Novos ares', desc: 'Repetir a brincadeira de Busca (fase 4), mas em novos ambientes.', steps: ['Mude para ambientes novos', 'Repita a sequência de busca', 'Mantenha os comandos', 'Aumente as distrações gradualmente', 'Generalize o comportamento'] }
+                ]
+            },
+            'comando-limitador': {
+                name: 'Comando Limitador',
+                icon: 'timer',
+                color: 'blue',
+                phases: [
+                    { title: 'Nível 1 - 15 minutos', desc: 'Local sem barulhos. O cão deve ficar totalmente relaxado e alheio a estímulos por 15 minutos.', time: 15, level: 1, env: 'sem barulhos' },
+                    { title: 'Nível 1 - 20 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 20 minutos.', time: 20, level: 1, env: 'sem barulhos' },
+                    { title: 'Nível 1 - 30 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 30 minutos.', time: 30, level: 1, env: 'sem barulhos' },
+                    { title: 'Nível 1 - 50 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 50 minutos.', time: 50, level: 1, env: 'sem barulhos' },
+                    { title: 'Nível 1 - 80 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 80 minutos.', time: 80, level: 1, env: 'sem barulhos' },
+                    { title: 'Nível 1 - 120 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 120 minutos.', time: 120, level: 1, env: 'sem barulhos' },
+                    { title: 'Nível 2 - 15 minutos', desc: 'Local com pouco barulho. O cão deve ficar totalmente relaxado por 15 minutos.', time: 15, level: 2, env: 'pouco barulho' },
+                    { title: 'Nível 2 - 20 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 20 minutos.', time: 20, level: 2, env: 'pouco barulho' },
+                    { title: 'Nível 2 - 30 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 30 minutos.', time: 30, level: 2, env: 'pouco barulho' },
+                    { title: 'Nível 2 - 50 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 50 minutos.', time: 50, level: 2, env: 'pouco barulho' },
+                    { title: 'Nível 2 - 80 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 80 minutos.', time: 80, level: 2, env: 'pouco barulho' },
+                    { title: 'Nível 2 - 120 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 120 minutos.', time: 120, level: 2, env: 'pouco barulho' },
+                    { title: 'Nível 3 - 15 minutos', desc: 'Local barulhento. O cão deve ficar totalmente relaxado por 15 minutos.', time: 15, level: 3, env: 'barulhento' },
+                    { title: 'Nível 3 - 20 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 20 minutos.', time: 20, level: 3, env: 'barulhento' },
+                    { title: 'Nível 3 - 30 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 30 minutos.', time: 30, level: 3, env: 'barulhento' },
+                    { title: 'Nível 3 - 50 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 50 minutos.', time: 50, level: 3, env: 'barulhento' },
+                    { title: 'Nível 3 - 80 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 80 minutos.', time: 80, level: 3, env: 'barulhento' },
+                    { title: 'Nível 3 - 120 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 120 minutos.', time: 120, level: 3, env: 'barulhento' }
+                ]
+            }
+        };
+
+        // INICIALIZAÇÃO
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            checkAuth();
+            setupEventListeners();
+        });
+
+        async function checkAuth() {
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                
+                if (error) throw error;
+                
+                if (session) {
+                    currentUser = session.user;
+                    await loadUserProfile();
+                    showScreen('main-screen');
+                    await loadDogs();
+                } else {
+                    showScreen('login-screen');
+                }
+            } catch (error) {
+                console.error('Erro ao verificar autenticação:', error);
+                showToast('Erro ao conectar. Tente novamente.', 'error');
+                showScreen('login-screen');
+            }
+        }
+
+        async function loadUserProfile() {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+                
+                if (error && error.code !== 'PGRST116') throw error;
+                
+                if (data) {
+                    document.getElementById('username-display').textContent = '@' + data.username;
+                    if (data.avatar_url) {
+                        document.getElementById('user-avatar').src = data.avatar_url;
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar perfil:', error);
+            }
+        }
+
+        function setupEventListeners() {
+            // Login
+            document.getElementById('login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('login-btn');
+                btn.disabled = true;
+                btn.innerHTML = '<div class="loading-spinner"></div>';
+                
+                try {
+                    const email = document.getElementById('login-email').value;
+                    const password = document.getElementById('login-password').value;
+                    
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email,
+                        password
+                    });
+                    
+                    if (error) throw error;
+                    
+                    currentUser = data.user;
+                    await loadUserProfile();
+                    showScreen('main-screen');
+                    await loadDogs();
+                    showToast('Login realizado com sucesso!', 'success');
+                } catch (error) {
+                    showToast(error.message === 'Invalid login credentials' ? 'E-mail ou senha incorretos' : 'Erro ao fazer login', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>Entrar</span>';
+                }
+            });
+
+            // Registro
+            document.getElementById('register-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('register-btn');
+                btn.disabled = true;
+                btn.innerHTML = '<div class="loading-spinner"></div>';
+                
+                try {
+                    const username = document.getElementById('reg-username').value.replace('@', '').trim();
+                    const email = document.getElementById('reg-email').value;
+                    const password = document.getElementById('reg-password').value;
+                    
+                    // Verificar se username já existe
+                    const { data: existingUser } = await supabase
+                        .from('profiles')
+                        .select('username')
+                        .eq('username', username)
+                        .single();
+                    
+                    if (existingUser) {
+                        throw new Error('Nome de usuário já existe');
+                    }
+                    
+                    const { data, error } = await supabase.auth.signUp({
+                        email,
+                        password,
+                        options: {
+                            data: {
+                                username: username
+                            }
+                        }
+                    });
+                    
+                    if (error) throw error;
+                    
+                    // Criar perfil
+                    const { error: profileError } = await supabase
+                        .from('profiles')
+                        .insert([{
+                            id: data.user.id,
+                            username: username,
+                            email: email,
+                            avatar_url: `https://ui-avatars.com/api/?name=${username}&background=10b981&color=fff`
+                        }]);
+                    
+                    if (profileError) throw profileError;
+                    
+                    currentUser = data.user;
+                    await loadUserProfile();
+                    showScreen('main-screen');
+                    showToast('Conta criada com sucesso!', 'success');
+                } catch (error) {
+                    showToast(error.message, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>Criar Conta</span>';
+                }
+            });
+
+            // Adicionar Cão
+            document.getElementById('add-dog-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('add-dog-btn');
+                btn.disabled = true;
+                btn.innerHTML = '<div class="loading-spinner"></div>';
+                
+                try {
+                    const photoFile = document.getElementById('dog-photo-input').files[0];
+                    let photoUrl = null;
+                    
+                    // Upload foto se existir
+                    if (photoFile) {
+                        const fileName = `${currentUser.id}/${Date.now()}_${photoFile.name}`;
+                        const { data: uploadData, error: uploadError } = await supabase.storage
+                            .from('dog-photos')
+                            .upload(fileName, photoFile);
+                        
+                        if (uploadError) throw uploadError;
+                        
+                        const { data: { publicUrl } } = supabase.storage
+                            .from('dog-photos')
+                            .getPublicUrl(fileName);
+                        
+                        photoUrl = publicUrl;
+                    }
+                    
+                    const dogData = {
+                        user_id: currentUser.id,
+                        name: document.getElementById('dog-name').value,
+                        breed: document.getElementById('dog-breed').value,
+                        age: parseFloat(document.getElementById('dog-age').value),
+                        neutered: document.getElementById('dog-neutered').value === 'true',
+                        chip: document.getElementById('dog-chip').value || null,
+                        photo_url: photoUrl,
+                        siga_me_phase: 0,
+                        siga_me_stars: 0,
+                        siga_me_last_training: null,
+                        controle_boca_phase: 0,
+                        controle_boca_stars: 0,
+                        controle_boca_last_training: null,
+                        comando_limitador_phase: 0,
+                        comando_limitador_stars: 0,
+                        comando_limitador_last_training: null,
+                        comando_limitador_level: 1,
+                        total_stars: 0,
+                        level: 1,
+                        streak: 0,
+                        last_training_date: null
+                    };
+                    
+                    const { data, error } = await supabase
+                        .from('dogs')
+                        .insert([dogData])
+                        .select()
+                        .single();
+                    
+                    if (error) throw error;
+                    
+                    dogs.push(data);
+                    renderDogsList();
+                    closeModal('add-dog-modal');
+                    
+                    if (dogs.length === 1) {
+                        selectDog(data.id);
+                    }
+                    
+                    // Reset form
+                    document.getElementById('add-dog-form').reset();
+                    document.getElementById('dog-photo-preview').innerHTML = '<i data-lucide="dog" class="w-12 h-12 text-gray-400"></i>';
+                    lucide.createIcons();
+                    showToast(`${data.name} adicionado à matilha!`, 'success');
+                    
+                } catch (error) {
+                    console.error('Erro ao adicionar cão:', error);
+                    showToast('Erro ao adicionar cão. Tente novamente.', 'error');
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>Adicionar à Matilha</span>';
+                }
+            });
+
+            // Star rating
+            document.querySelectorAll('.star').forEach(star => {
+                star.addEventListener('click', function() {
+                    currentRating = parseInt(this.dataset.value);
+                    updateStarDisplay();
+                });
+            });
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('[id$="-screen"]').forEach(screen => {
+                screen.classList.add('hidden-screen');
+            });
+            document.getElementById(screenId).classList.remove('hidden-screen');
+            
+            if (screenId === 'main-screen') {
+                lucide.createIcons();
+            }
+        }
+
+        async function loadDogs() {
+            try {
+                document.getElementById('main-loading').classList.remove('hidden');
+                document.getElementById('main-content').classList.add('hidden');
+                
+                const { data, error } = await supabase
+                    .from('dogs')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: true });
+                
+                if (error) throw error;
+                
+                dogs = data || [];
+                renderDogsList();
+                
+                if (dogs.length > 0 && !selectedDogId) {
+                    selectDog(dogs[0].id);
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar cães:', error);
+                showToast('Erro ao carregar sua matilha', 'error');
+            } finally {
+                document.getElementById('main-loading').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+            }
+        }
+
+        function renderDogsList() {
+            const container = document.getElementById('dogs-list');
+            const emptyState = document.getElementById('empty-dogs');
+            container.innerHTML = '';
+            
+            if (dogs.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            dogs.forEach(dog => {
+                const isSelected = dog.id === selectedDogId;
+                const div = document.createElement('div');
+                div.className = `flex-shrink-0 cursor-pointer transition-all duration-300 ${isSelected ? 'scale-105' : 'opacity-70'}`;
+                div.onclick = () => selectDog(dog.id);
+                
+                div.innerHTML = `
+                    <div class="relative">
+                        <div class="w-20 h-20 rounded-2xl overflow-hidden border-4 ${isSelected ? 'border-white shadow-lg' : 'border-white/50'}">
+                            ${dog.photo_url ? 
+                                `<img src="${dog.photo_url}" class="w-full h-full object-cover">` : 
+                                `<div class="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                                    <i data-lucide="dog" class="w-8 h-8 text-white"></i>
+                                </div>`
+                            }
+                        </div>
+                        ${isSelected ? '<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-yellow-400 rounded-full"></div>' : ''}
+                    </div>
+                    <p class="text-white text-xs text-center mt-2 font-medium truncate w-20">${dog.name}</p>
+                `;
+                container.appendChild(div);
+            });
+            
+            lucide.createIcons();
+        }
+
+        function selectDog(dogId) {
+            selectedDogId = dogId;
+            renderDogsList();
+            updateDogProgress();
+            document.getElementById('dog-progress').classList.remove('hidden');
+        }
+
+        function updateDogProgress() {
+            const dog = dogs.find(d => d.id === selectedDogId);
+            if (!dog) return;
+            
+            document.getElementById('selected-dog-name').textContent = dog.name;
+            document.getElementById('selected-dog-breed').textContent = dog.breed;
+            document.getElementById('dog-level').textContent = dog.level || 1;
+            
+            const completedTrainings = (dog.siga_me_phase || 0) + (dog.controle_boca_phase || 0) + (dog.comando_limitador_phase || 0);
+            document.getElementById('completed-trainings').textContent = completedTrainings;
+            document.getElementById('current-streak').textContent = dog.streak || 0;
+            document.getElementById('total-stars').textContent = dog.total_stars || 0;
+            
+            // Calcular progresso do nível
+            const totalPhases = 6 * 3;
+            const completedPhases = completedTrainings;
+            const progressPercent = Math.min((completedPhases / totalPhases) * 100, 100);
+            document.getElementById('level-progress').style.width = progressPercent + '%';
+            
+            // Atualizar cards dos pilares
+            updatePilarStatus('siga-me', {
+                currentPhase: dog.siga_me_phase || 0,
+                stars: dog.siga_me_stars || 0,
+                lastTraining: dog.siga_me_last_training
+            });
+            updatePilarStatus('controle-boca', {
+                currentPhase: dog.controle_boca_phase || 0,
+                stars: dog.controle_boca_stars || 0,
+                lastTraining: dog.controle_boca_last_training
+            });
+            updatePilarStatus('comando-limitador', {
+                currentPhase: dog.comando_limitador_phase || 0,
+                stars: dog.comando_limitador_stars || 0,
+                lastTraining: dog.comando_limitador_last_training,
+                currentLevel: dog.comando_limitador_level || 1
+            });
+        }
+
+        function updatePilarStatus(pilarKey, progress) {
+            const phaseEl = document.getElementById(`${pilarKey}-phase`);
+            const statusEl = document.getElementById(`${pilarKey}-status`);
+            const lockEl = document.getElementById(`${pilarKey}-lock`);
+            const nextEl = document.getElementById(`${pilarKey}-next`);
+            const starsEl = document.getElementById(`${pilarKey}-stars`);
+            const cardEl = document.querySelector(`[onclick="openPilar('${pilarKey}')"]`);
+            
+            const pilarData = pilaresData[pilarKey];
+            const currentPhase = progress.currentPhase || 0;
+            const maxPhases = pilarKey === 'comando-limitador' ? 18 : pilarData.phases.length;
+            
+            phaseEl.textContent = Math.min(currentPhase + 1, maxPhases);
+            starsEl.textContent = (progress.stars || 0) + '★';
+            
+            // Verificar se está bloqueado (cooldown de 24h)
+            const lastTraining = progress.lastTraining ? new Date(progress.lastTraining) : null;
+            const now = new Date();
+            const hoursSinceLastTraining = lastTraining ? (now - lastTraining) / (1000 * 60 * 60) : 999;
+            const isLocked = lastTraining && hoursSinceLastTraining < 24;
+            
+            if (currentPhase >= maxPhases) {
+                statusEl.textContent = 'Concluído!';
+                statusEl.className = 'text-xs text-green-600 font-bold';
+                nextEl.textContent = 'Todas as fases';
+                lockEl.classList.add('hidden');
+                cardEl.classList.remove('locked');
+            } else if (isLocked) {
+                statusEl.textContent = 'Disponível amanhã';
+                statusEl.className = 'text-xs text-orange-500';
+                lockEl.classList.remove('hidden');
+                cardEl.classList.add('locked');
+                const nextPhase = pilarData.phases[currentPhase] || pilarData.phases[pilarData.phases.length - 1];
+                nextEl.textContent = nextPhase.title.split('-')[0].trim();
+            } else {
+                statusEl.textContent = 'Disponível agora';
+                statusEl.className = 'text-xs text-green-600';
+                lockEl.classList.add('hidden');
+                cardEl.classList.remove('locked');
+                const nextPhase = pilarData.phases[currentPhase];
+                nextEl.textContent = nextPhase.title.split('-')[0].trim();
+            }
+            
+            // Atualizar nível do limitador
+            if (pilarKey === 'comando-limitador') {
+                document.getElementById('limitador-level').textContent = progress.currentLevel || 1;
+                const currentLimitadorPhase = pilarData.phases[currentPhase] || pilarData.phases[0];
+                document.getElementById('limitador-time').textContent = currentLimitadorPhase.time;
+            }
+        }
+
+        async function openPilar(pilarKey) {
+            const dog = dogs.find(d => d.id === selectedDogId);
+            if (!dog) {
+                showToast('Selecione um cão primeiro!', 'error');
+                return;
+            }
+            
+            let progress;
+            if (pilarKey === 'siga-me') {
+                progress = { currentPhase: dog.siga_me_phase, lastTraining: dog.siga_me_last_training };
+            } else if (pilarKey === 'controle-boca') {
+                progress = { currentPhase: dog.controle_boca_phase, lastTraining: dog.controle_boca_last_training };
+            } else {
+                progress = { 
+                    currentPhase: dog.comando_limitador_phase, 
+                    lastTraining: dog.comando_limitador_last_training,
+                    currentLevel: dog.comando_limitador_level 
+                };
+            }
+            
+            const lastTraining = progress.lastTraining ? new Date(progress.lastTraining) : null;
+            const now = new Date();
+            const hoursSinceLastTraining = lastTraining ? (now - lastTraining) / (1000 * 60 * 60) : 999;
+            
+            if (lastTraining && hoursSinceLastTraining < 24) {
+                const nextAvailable = new Date(lastTraining);
+                nextAvailable.setDate(nextAvailable.getDate() + 1);
+                document.getElementById('blocked-message').textContent = 
+                    `Você já treinou este pilar hoje. Próximo treino disponível amanhã às ${nextAvailable.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}.`;
+                document.getElementById('blocked-modal').classList.remove('hidden-screen');
+                return;
+            }
+            
+            currentTraining = {
+                pilar: pilarKey,
+                dogId: selectedDogId,
+                phaseIndex: progress.currentPhase || 0
+            };
+            
+            const pilarData = pilaresData[pilarKey];
+            const phaseData = pilarData.phases[progress.currentPhase || 0] || pilarData.phases[pilarData.phases.length - 1];
+            
+            document.getElementById('training-title').textContent = pilarData.name;
+            document.getElementById('training-pilar-name').textContent = pilarData.name;
+            document.getElementById('training-phase-badge').textContent = 
+                pilarKey === 'comando-limitador' ? `Nível ${phaseData.level} • Fase ${((progress.currentPhase || 0) % 6) + 1}` : `Fase ${(progress.currentPhase || 0) + 1}`;
+            document.getElementById('training-phase-title').textContent = phaseData.title;
+            document.getElementById('training-phase-desc').textContent = phaseData.desc;
+            
+            // Renderizar passos
+            const stepsContainer = document.getElementById('training-steps');
+            stepsContainer.innerHTML = '';
+            phaseData.steps.forEach((step, index) => {
+                const stepDiv = document.createElement('div');
+                stepDiv.className = 'flex items-start gap-3 p-3 bg-gray-50 rounded-xl';
+                stepDiv.innerHTML = `
+                    <div class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">${index + 1}</div>
+                    <p class="text-sm text-gray-700">${step}</p>
+                `;
+                stepsContainer.appendChild(stepDiv);
+            });
+            
+            // Configurar timer se for comando limitador
+            const timerContainer = document.getElementById('timer-container');
+            const completeBtn = document.getElementById('complete-btn');
+            
+            if (pilarKey === 'comando-limitador') {
+                timerContainer.classList.remove('hidden');
+                requiredTimerSeconds = phaseData.time * 60;
+                timerSeconds = 0;
+                updateTimerDisplay();
+                completeBtn.disabled = true;
+                completeBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                completeBtn.innerHTML = '<i data-lucide="lock" class="w-6 h-6"></i> Complete o tempo para continuar';
+            } else {
+                timerContainer.classList.add('hidden');
+                completeBtn.disabled = false;
+                completeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                completeBtn.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6"></i> Concluir Treino';
+            }
+            
+            lucide.createIcons();
+            showScreen('training-screen');
+        }
+
+        function closeTraining() {
+            stopTimer();
+            showScreen('main-screen');
+            currentTraining = null;
+        }
+
+        // TIMER FUNCTIONS
+        function toggleTimer() {
+            if (timerRunning) {
+                stopTimer();
+            } else {
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            timerRunning = true;
+            document.getElementById('timer-icon').setAttribute('data-lucide', 'pause');
+            lucide.createIcons();
+            
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                updateTimerDisplay();
+                
+                if (timerSeconds >= requiredTimerSeconds) {
+                    stopTimer();
+                    document.getElementById('complete-btn').disabled = false;
+                    document.getElementById('complete-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+                    document.getElementById('complete-btn').innerHTML = '<i data-lucide="check-circle" class="w-6 h-6"></i> Concluir Treino';
+                    lucide.createIcons();
+                    
+                    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            timerRunning = false;
+            clearInterval(timerInterval);
+            document.getElementById('timer-icon').setAttribute('data-lucide', 'play');
+            lucide.createIcons();
+        }
+
+        function resetTimer() {
+            stopTimer();
+            timerSeconds = 0;
+            updateTimerDisplay();
+            document.getElementById('complete-btn').disabled = true;
+            document.getElementById('complete-btn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('complete-btn').innerHTML = '<i data-lucide="lock" class="w-6 h-6"></i> Complete o tempo para continuar';
+            lucide.createIcons();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timerSeconds >= requiredTimerSeconds) {
+                document.getElementById('timer-display').classList.add('text-green-400');
+            }
+        }
+
+        // RATING FUNCTIONS
+        function showRating() {
+            if (currentTraining.pilar === 'comando-limitador' && timerSeconds < requiredTimerSeconds) {
+                showToast('Complete o tempo mínimo de relaxamento!', 'error');
+                return;
+            }
+            
+            const dog = dogs.find(d => d.id === selectedDogId);
+            document.getElementById('rating-dog-name').textContent = dog.name;
+            currentRating = 0;
+            updateStarDisplay();
+            document.getElementById('rating-modal').classList.remove('hidden-screen');
+        }
+
+        function updateStarDisplay() {
+            document.querySelectorAll('.star').forEach(star => {
+                const value = parseInt(star.dataset.value);
+                if (value <= currentRating) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+            
+            const texts = ['Toque nas estrelas para avaliar', 'Precisa melhorar', 'Bom', 'Muito bom', 'Excelente', 'Perfeito!'];
+            document.getElementById('rating-text').textContent = texts[currentRating];
+            
+            const submitBtn = document.getElementById('submit-rating');
+            if (currentRating > 0) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('bg-gray-300', 'text-gray-500');
+                submitBtn.classList.add('btn-primary', 'text-white');
+            }
+        }
+
+        async function submitRating() {
+            if (currentRating === 0) return;
+            
+            const btn = document.getElementById('submit-rating');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loading-spinner border-white border-t-transparent w-5 h-5"></div>';
+            
+            try {
+                const dog = dogs.find(d => d.id === selectedDogId);
+                const now = new Date().toISOString();
+                
+                // Preparar dados de atualização
+                const updateData = {
+                    total_stars: (dog.total_stars || 0) + currentRating,
+                    last_training_date: now
+                };
+                
+                // Atualizar campos específicos do pilar
+                if (currentTraining.pilar === 'siga-me') {
+                    updateData.siga_me_last_training = now;
+                    updateData.siga_me_stars = (dog.siga_me_stars || 0) + currentRating;
+                    if (currentRating === 5) {
+                        updateData.siga_me_phase = (dog.siga_me_phase || 0) + 1;
+                    }
+                } else if (currentTraining.pilar === 'controle-boca') {
+                    updateData.controle_boca_last_training = now;
+                    updateData.controle_boca_stars = (dog.controle_boca_stars || 0) + currentRating;
+                    if (currentRating === 5) {
+                        updateData.controle_boca_phase = (dog.controle_boca_phase || 0) + 1;
+                    }
+                } else if (currentTraining.pilar === 'comando-limitador') {
+                    updateData.comando_limitador_last_training = now;
+                    updateData.comando_limitador_stars = (dog.comando_limitador_stars || 0) + currentRating;
+                    if (currentRating === 5) {
+                        const newPhase = (dog.comando_limitador_phase || 0) + 1;
+                        updateData.comando_limitador_phase = newPhase;
+                        // Avançar nível a cada 6 fases
+                        if (newPhase % 6 === 0 && newPhase < 18) {
+                            updateData.comando_limitador_level = (dog.comando_limitador_level || 1) + 1;
+                        }
+                    }
+                }
+                
+                // Calcular streak
+                const lastDate = dog.last_training_date ? new Date(dog.last_training_date).toDateString() : null;
+                const today = new Date().toDateString();
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                if (lastDate === yesterday.toDateString()) {
+                    updateData.streak = (dog.streak || 0) + 1;
+                } else if (lastDate !== today) {
+                    updateData.streak = 1;
+                }
+                
+                // Calcular nível do cão
+                const totalPhases = (updateData.siga_me_phase || dog.siga_me_phase || 0) + 
+                                   (updateData.controle_boca_phase || dog.controle_boca_phase || 0) + 
+                                   (updateData.comando_limitador_phase || dog.comando_limitador_phase || 0);
+                updateData.level = Math.floor(totalPhases / 3) + 1;
+                
+                // Atualizar no Supabase
+                const { data, error } = await supabase
+                    .from('dogs')
+                    .update(updateData)
+                    .eq('id', selectedDogId)
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                // Atualizar local
+                const index = dogs.findIndex(d => d.id === selectedDogId);
+                dogs[index] = data;
+                
+                // Mostrar sucesso
+                document.getElementById('rating-modal').classList.add('hidden-screen');
+                document.getElementById('success-stars').textContent = currentRating;
+                document.getElementById('success-modal').classList.remove('hidden-screen');
+                
+                createConfetti();
+                showToast(`Treino concluído! +${currentRating} estrelas`, 'success');
+                
+            } catch (error) {
+                console.error('Erro ao salvar treino:', error);
+                showToast('Erro ao salvar treino. Tente novamente.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Confirmar Avaliação';
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#fbbf24', '#10b981', '#3b82f6', '#f59e0b', '#ef4444'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        function closeSuccess() {
+            document.getElementById('success-modal').classList.add('hidden-screen');
+            closeTraining();
+            updateDogProgress();
+        }
+
+        // MODAL FUNCTIONS
+        function showAddDogModal() {
+            document.getElementById('add-dog-modal').classList.remove('hidden-screen');
+            lucide.createIcons();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden-screen');
+        }
+
+        function triggerDogPhoto() {
+            document.getElementById('dog-photo-input').click();
+        }
+
+        function handleDogPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('dog-photo-preview').innerHTML = 
+                        `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function editProfile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                try {
+                    const fileName = `avatars/${currentUser.id}_${Date.now()}.${file.name.split('.').pop()}`;
+                    
+                    const { error: uploadError } = await supabase.storage
+                        .from('avatars')
+                        .upload(fileName, file);
+                    
+                    if (uploadError) throw uploadError;
+                    
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('avatars')
+                        .getPublicUrl(fileName);
+                    
+                    const { error: updateError } = await supabase
+                        .from('profiles')
+                        .update({ avatar_url: publicUrl })
+                        .eq('id', currentUser.id);
+                    
+                    if (updateError) throw updateError;
+                    
+                    document.getElementById('user-avatar').src = publicUrl;
+                    showToast('Foto de perfil atualizada!', 'success');
+                    
+                } catch (error) {
+                    console.error('Erro ao atualizar foto:', error);
+                    showToast('Erro ao atualizar foto', 'error');
+                }
+            };
+            input.click();
+        }
+
+        async function logout() {
+            try {
+                await supabase.auth.signOut();
+                currentUser = null;
+                dogs = [];
+                selectedDogId = null;
+                showScreen('login-screen');
+                showToast('Logout realizado', 'success');
+            } catch (error) {
+                showToast('Erro ao fazer logout', 'error');
+            }
+        }
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Fechar modais ao clicar fora
+        window.onclick = function(event) {
+            if (event.target.classList.contains('fixed')) {
+                event.target.classList.add('hidden-screen');
+            }
+        }
+    </script>
+</body>
+</html>
