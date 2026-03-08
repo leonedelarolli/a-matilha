@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>A Matilha - Adestramento Premium</title>
+    <title>A Matilha - Adestramento</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="https://js.stripe.com/v3/"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -20,54 +19,21 @@
         .dog-avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid #16a34a; }
         .dog-avatar.selected { border-color: #fbbf24; box-shadow: 0 0 15px rgba(251, 191, 36, 0.6); transform: scale(1.1); }
         .timer-display { font-size: 3.5rem; font-weight: 800; color: #16a34a; font-variant-numeric: tabular-nums; }
-        .paywall { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
         .hidden-screen { display: none !important; }
-        @keyframes pulse-border { 0%, 100% { border-color: #fbbf24; } 50% { border-color: #f59e0b; } }
-        .premium-badge { animation: pulse-border 2s infinite; }
+        @keyframes slide-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .animate-slide-up { animation: slide-up 0.3s ease-out; }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <!-- CONFIGURAÇÃO: SUBSTITUA ESTES VALORES -->
+    <!-- CONFIGURAÇÃO - SUBSTITUA AQUI -->
     <script>
-        // ⬇️ COLE SUAS CHAVES AQUI ⬇️
-        const SUPABASE_URL = 'https://kwnyrcrpbbhogdidnlbv.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_8nPa-MAvwOxJ8ddyN1A2bA_1sm4rw-l';
-        const STRIPE_KEY = 'pk_test_51T8kOcKVjFQdT2m5S2ogPFnzGFASQbjFc9crAtTjV6b1FkkSDh7w6waxhZ3Slye9MCrcoMQ9kKtDBV50K7zJ9u6900InMfX2sN';
-        const PRICE_ID = 'price_1T8kX5KVjFQdT2m5h0EZfyKw';
+        // ⬇️ COLE SUAS CHAVES DO SUPABASE AQUI ⬇️
+        const SUPABASE_URL = 'https://SEU-PROJETO.supabase.co';
+        const SUPABASE_KEY = 'eyJ...SUA-ANON-KEY';
         
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const stripe = Stripe(STRIPE_KEY);
     </script>
-
-    <!-- TELA DE PAGAMENTO (Paywall) -->
-    <div id="paywall-screen" class="hidden-screen fixed inset-0 paywall text-white z-50 flex flex-col items-center justify-center p-6">
-        <div class="max-w-md w-full text-center">
-            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-3xl shadow-lg">
-                <i class="fas fa-paw"></i>
-            </div>
-            <h1 class="text-3xl font-bold mb-2">A Matilha Premium</h1>
-            <p class="text-gray-300 mb-8">Método completo de adestramento para seu cão</p>
-            
-            <div class="bg-white/10 rounded-2xl p-6 mb-6 backdrop-blur-sm border border-white/20">
-                <div class="text-4xl font-bold text-green-400 mb-2">R$ 29,90<span class="text-lg text-gray-400">/mês</span></div>
-                <ul class="text-left space-y-3 text-sm text-gray-300 mb-6">
-                    <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> 3 Pilares de treinamento</li>
-                    <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Acompanhamento diário</li>
-                    <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Gamificação completa</li>
-                    <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Suporte por email</li>
-                </ul>
-                <button onclick="app.subscribe()" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-4 rounded-xl btn-press shadow-lg text-lg">
-                    Assinar Agora
-                </button>
-                <button onclick="app.logout()" class="w-full mt-3 text-gray-400 text-sm hover:text-white">
-                    Já tem conta? Entrar
-                </button>
-            </div>
-            
-            <p class="text-xs text-gray-500">Cancelamento a qualquer momento. 7 dias de garantia.</p>
-        </div>
-    </div>
 
     <!-- AUTH SCREEN -->
     <div id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6">
@@ -96,7 +62,7 @@
                 <input type="email" id="reg-email" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-nature-400 outline-none" placeholder="Email">
                 <input type="password" id="reg-password" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-nature-400 outline-none" placeholder="Senha (6+ caracteres)">
                 <button onclick="app.register()" class="w-full nature-gradient text-white font-bold py-4 rounded-xl btn-press shadow-lg">
-                    Criar Conta Grátis
+                    Criar Conta
                 </button>
                 <p class="text-center text-sm text-gray-600">
                     Tem conta? <button onclick="app.toggleAuthMode()" class="text-nature-600 font-bold">Entrar</button>
@@ -116,14 +82,9 @@
                         <h2 id="user-name" class="font-bold">@usuario</h2>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold premium-badge border border-yellow-400">
-                        <i class="fas fa-crown text-yellow-400 mr-1"></i>PRO
-                    </span>
-                    <button onclick="app.logout()" class="text-white/80 hover:text-white">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
-                </div>
+                <button onclick="app.logout()" class="text-white/80 hover:text-white">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
         </header>
 
@@ -364,8 +325,7 @@
                 currentRating: 0,
                 timerInterval: null,
                 timerSeconds: 0,
-                timerTarget: 0,
-                subscription: null
+                timerTarget: 0
             },
 
             pilares: {
@@ -403,39 +363,12 @@
             },
 
             async init() {
+                // Verifica sessão existente
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session) {
                     this.data.user = session.user;
-                    await this.checkSubscription();
-                }
-            },
-
-            async checkSubscription() {
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', this.data.user.id)
-                    .single();
-
-                if (!profile || profile.subscription_status !== 'active') {
-                    document.getElementById('paywall-screen').classList.remove('hidden-screen');
-                    document.getElementById('auth-screen').classList.add('hidden-screen');
-                    document.getElementById('main-app').classList.add('hidden-screen');
-                } else {
-                    this.data.subscription = profile;
                     this.showMainApp();
                 }
-            },
-
-            async subscribe() {
-                // Redireciona para checkout Stripe
-                // Você precisará criar uma função serverless para isso
-                // Por enquanto, simulação:
-                this.showToast('Redirecionando para pagamento...');
-                
-                // Em produção, chame sua API:
-                // const response = await fetch('/api/create-checkout', {...})
-                // stripe.redirectToCheckout({ sessionId: response.id })
             },
 
             toggleAuthMode() {
@@ -453,27 +386,36 @@
                     return;
                 }
 
-                const { data, error } = await supabase.auth.signUp({
+                // Cria usuário no Auth
+                const { data: authData, error: authError } = await supabase.auth.signUp({
                     email,
                     password,
-                    options: { data: { username: username.startsWith('@') ? username : '@' + username } }
+                    options: { 
+                        data: { username: username.startsWith('@') ? username : '@' + username } 
+                    }
                 });
 
-                if (error) {
-                    this.showToast(error.message);
+                if (authError) {
+                    this.showToast(authError.message);
                     return;
                 }
 
-                // Cria profile
-                await supabase.from('profiles').insert([{
-                    id: data.user.id,
+                // Cria profile com acesso LIBERADO (VIP)
+                const { error: profileError } = await supabase.from('profiles').insert([{
+                    id: authData.user.id,
                     username: username.startsWith('@') ? username : '@' + username,
-                    subscription_status: 'inactive'
+                    subscription_status: 'active',  // ✅ LIBERADO!
+                    subscription_ends_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 ano
                 }]);
 
-                this.data.user = data.user;
-                document.getElementById('paywall-screen').classList.remove('hidden-screen');
-                document.getElementById('register-form').classList.add('hidden-screen');
+                if (profileError) {
+                    this.showToast('Erro ao criar perfil: ' + profileError.message);
+                    return;
+                }
+
+                this.data.user = authData.user;
+                this.showToast('Conta criada! Bem-vindo à Matilha!');
+                this.showMainApp();
             },
 
             async login() {
@@ -483,12 +425,30 @@
                 const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
                 if (error) {
-                    this.showToast('Credenciais inválidas');
+                    this.showToast('Email ou senha incorretos');
                     return;
                 }
 
                 this.data.user = data.user;
-                await this.checkSubscription();
+                
+                // Verifica/cria profile se não existir
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', data.user.id)
+                    .single();
+
+                if (!profile) {
+                    // Cria profile VIP se não existir
+                    await supabase.from('profiles').insert([{
+                        id: data.user.id,
+                        username: data.user.user_metadata?.username || '@usuario',
+                        subscription_status: 'active',
+                        subscription_ends_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+                    }]);
+                }
+
+                this.showMainApp();
             },
 
             async logout() {
@@ -498,7 +458,6 @@
 
             showMainApp() {
                 document.getElementById('auth-screen').classList.add('hidden-screen');
-                document.getElementById('paywall-screen').classList.add('hidden-screen');
                 document.getElementById('main-app').classList.remove('hidden-screen');
                 
                 document.getElementById('user-name').textContent = this.data.user.user_metadata?.username || '@usuario';
@@ -508,11 +467,16 @@
             },
 
             async loadDogs() {
-                const { data: dogs } = await supabase
+                const { data: dogs, error } = await supabase
                     .from('dogs')
                     .select('*')
                     .eq('user_id', this.data.user.id)
                     .order('created_at', { ascending: true });
+
+                if (error) {
+                    this.showToast('Erro ao carregar cães');
+                    return;
+                }
 
                 this.data.dogs = dogs || [];
                 this.renderDogs();
@@ -520,7 +484,6 @@
 
             renderDogs() {
                 const container = document.getElementById('dogs-list');
-                // Mantém o botão de adicionar
                 const addBtn = container.firstElementChild;
                 container.innerHTML = '';
                 container.appendChild(addBtn);
@@ -532,7 +495,7 @@
                     
                     const isSelected = this.data.currentDog === index;
                     div.innerHTML = `
-                        <img src="${dog.photo_url || 'https://ui-avatars.com/api/?name=' + dog.name + '&background=random'}" 
+                        <img src="${dog.photo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(dog.name) + '&background=random'}" 
                              class="dog-avatar ${isSelected ? 'selected' : ''} mb-1">
                         <p class="text-xs font-semibold ${isSelected ? 'text-nature-700' : 'text-gray-600'}">${dog.name}</p>
                     `;
@@ -553,9 +516,9 @@
             updateSelectedDogInfo() {
                 const dog = this.data.dogs[this.data.currentDog];
                 document.getElementById('selected-dog-info').classList.remove('hidden-screen');
-                document.getElementById('current-dog-img').src = dog.photo_url || `https://ui-avatars.com/api/?name=${dog.name}&background=random`;
+                document.getElementById('current-dog-img').src = dog.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(dog.name)}&background=random`;
                 document.getElementById('current-dog-name').textContent = dog.name;
-                document.getElementById('current-dog-details').textContent = `${dog.breed} • ${dog.age} anos`;
+                document.getElementById('current-dog-details').textContent = `${dog.breed || 'Sem raça'} • ${dog.age || '?'} anos`;
                 
                 const totalStars = (dog.pilar1?.length || 0) + (dog.pilar2?.length || 0) + (dog.pilar3?.length || 0);
                 document.getElementById('current-dog-level').textContent = 'N' + (Math.floor(totalStars / 5) + 1);
@@ -592,7 +555,6 @@
                     return;
                 }
 
-                // Upload foto para Supabase Storage (simplificado - em produção use storage)
                 const { data: dog, error } = await supabase
                     .from('dogs')
                     .insert([{
@@ -600,8 +562,8 @@
                         name,
                         breed,
                         age,
-                        castrated,
-                        photo_url: photo.startsWith('data:') ? null : photo, // Base64 muito grande, em produção faça upload
+                        castrated: castrated || false,
+                        photo_url: photo.startsWith('data:') ? null : photo,
                         pilar1: [],
                         pilar2: [],
                         pilar3: []
@@ -618,7 +580,7 @@
                 this.closeModal('dog-modal');
                 this.renderDogs();
                 this.selectDog(this.data.dogs.length - 1);
-                this.showToast('Cão adicionado!');
+                this.showToast('Cão adicionado com sucesso!');
             },
 
             updatePilarsStatus() {
@@ -630,10 +592,9 @@
                     const history = dog[`pilar${p}`] || [];
                     const lastEntry = history[history.length - 1];
                     const currentPhase = history.length + 1;
-                    const maxPhase = p === 3 ? 18 : 6;
                     
                     const trainedToday = lastEntry && new Date(lastEntry.completed_at).toDateString() === today;
-                    const progress = Math.min(((currentPhase - 1) / (p === 3 ? 6 : 6)) * 100, 100);
+                    const progress = Math.min(((currentPhase - 1) / 6) * 100, 100);
                     
                     document.getElementById(`progress-${p}`).style.width = progress + '%';
                     document.getElementById(`phase-${p}`).textContent = p === 3 ? 
@@ -643,17 +604,19 @@
                     const statusEl = document.getElementById(`status-${p}`);
                     if (trainedToday) {
                         statusEl.innerHTML = '<i class="fas fa-check text-nature-500"></i>';
-                    } else if (currentPhase > maxPhase) {
+                    } else if (currentPhase > 6) {
                         statusEl.innerHTML = '<i class="fas fa-trophy text-yellow-500"></i>';
                     } else {
                         statusEl.innerHTML = '<i class="fas fa-play text-nature-500"></i>';
                     }
 
-                    // Daily status
                     const dailyEl = document.getElementById(`daily-${p}`);
                     if (trainedToday) {
                         dailyEl.classList.remove('bg-gray-200', 'text-gray-400');
                         dailyEl.classList.add('bg-nature-500', 'text-white');
+                    } else {
+                        dailyEl.classList.add('bg-gray-200', 'text-gray-400');
+                        dailyEl.classList.remove('bg-nature-500', 'text-white');
                     }
                 });
             },
@@ -670,7 +633,7 @@
                 const lastEntry = history[history.length - 1];
                 
                 if (lastEntry && new Date(lastEntry.completed_at).toDateString() === today) {
-                    this.showToast('Já treinou este pilar hoje!');
+                    this.showToast('Você já treinou este pilar hoje! Volte amanhã.');
                     return;
                 }
 
@@ -681,7 +644,6 @@
 
             showTrainingScreen() {
                 const pilar = this.pilares[this.data.currentPilar];
-                const dog = this.data.dogs[this.data.currentDog];
                 
                 document.getElementById('main-app').classList.add('hidden-screen');
                 document.getElementById('training-screen').classList.remove('hidden-screen');
@@ -697,12 +659,12 @@
                     
                     phaseInfo = {
                         titulo: `${pilar.niveis[nivelIdx].nome} - Fase ${faseIdx + 1}`,
-                        descricao: `Mantenha o cão relaxado por ${tempo} minutos.`,
+                        descricao: `Mantenha o cão relaxado por ${tempo} minutos completos.`,
                         contexto: pilar.niveis[nivelIdx].contexto
                     };
                     
                     document.getElementById('timer-container').classList.remove('hidden-screen');
-                    document.getElementById('timer-target').textContent = `Meta: ${tempo} min`;
+                    document.getElementById('timer-target').textContent = `Meta: ${tempo} minutos`;
                     this.resetTimer(tempo * 60);
                 } else {
                     phaseInfo = pilar.fases[this.data.currentPhase - 1];
@@ -720,7 +682,7 @@
                 this.updateTimerDisplay();
                 clearInterval(this.data.timerInterval);
                 this.data.timerRunning = false;
-                document.getElementById('timer-btn').innerHTML = '<i class="fas fa-play mr-2"></i>Iniciar';
+                document.getElementById('timer-btn').innerHTML = '<i class="fas fa-play mr-2"></i>Iniciar quando relaxar';
                 document.getElementById('timer-btn').className = 'w-full py-3 rounded-xl font-bold btn-press shadow bg-nature-500 text-white mb-2';
             },
 
@@ -740,7 +702,8 @@
                         this.updateTimerDisplay();
                         if (this.data.timerSeconds >= this.data.timerTarget) {
                             clearInterval(this.data.timerInterval);
-                            this.showToast('Tempo completado!');
+                            this.data.timerRunning = false;
+                            this.showToast('Tempo completado! Avalie o treino.');
                         }
                     }, 1000);
                 }
@@ -754,18 +717,21 @@
 
             completePhase() {
                 if (this.data.currentPilar === 3 && this.data.timerSeconds < this.data.timerTarget) {
-                    this.showToast(`Complete ${Math.floor(this.data.timerTarget/60)} min primeiro!`);
+                    this.showToast(`Complete os ${Math.floor(this.data.timerTarget/60)} minutos primeiro!`);
                     return;
                 }
                 document.getElementById('rating-modal').classList.remove('hidden-screen');
                 this.data.currentRating = 0;
                 this.updateStars();
+                document.getElementById('rating-feedback').textContent = '';
+                document.getElementById('submit-rating-btn').disabled = true;
+                document.getElementById('submit-rating-btn').classList.add('opacity-50');
             },
 
             setRating(n) {
                 this.data.currentRating = n;
                 this.updateStars();
-                const msgs = ['Precisa melhorar', 'Bom', 'Bom progresso', 'Muito bem!', 'Excelente!'];
+                const msgs = ['Precisa treinar mais', 'Bom começo', 'Bom progresso', 'Muito bem!', 'Excelente! Desbloqueado!'];
                 document.getElementById('rating-feedback').textContent = msgs[n-1];
                 document.getElementById('submit-rating-btn').disabled = false;
                 document.getElementById('submit-rating-btn').classList.remove('opacity-50');
@@ -780,7 +746,7 @@
             async submitRating() {
                 const dog = this.data.dogs[this.data.currentDog];
                 
-                // Salva no Supabase
+                // Salva log
                 await supabase.from('training_logs').insert([{
                     user_id: this.data.user.id,
                     dog_id: dog.id,
@@ -789,13 +755,17 @@
                     stars: this.data.currentRating
                 }]);
 
-                // Atualiza array local do cão
+                // Atualiza cão
                 const pilarKey = `pilar${this.data.currentPilar}`;
-                const newEntry = { completed_at: new Date().toISOString(), phase: this.data.currentPhase, stars: this.data.currentRating };
+                const newHistory = [...(dog[pilarKey] || []), {
+                    completed_at: new Date().toISOString(),
+                    phase: this.data.currentPhase,
+                    stars: this.data.currentRating
+                }];
                 
                 const { data: updatedDog } = await supabase
                     .from('dogs')
-                    .update({ [pilarKey]: [...(dog[pilarKey] || []), newEntry] })
+                    .update({ [pilarKey]: newHistory })
                     .eq('id', dog.id)
                     .select()
                     .single();
@@ -805,7 +775,12 @@
                 document.getElementById('rating-modal').classList.add('hidden-screen');
                 this.closeTraining();
                 this.updatePilarsStatus();
-                this.showToast(this.data.currentRating === 5 ? '⭐ Fase desbloqueada!' : 'Treino salvo!');
+                
+                if (this.data.currentRating === 5) {
+                    this.showToast('⭐ Fase desbloqueada! Volte amanhã.');
+                } else {
+                    this.showToast('Treino salvo! Tente novamente amanhã.');
+                }
             },
 
             closeTraining() {
@@ -830,5 +805,4 @@
         document.addEventListener('DOMContentLoaded', () => app.init());
     </script>
 </body>
-
 </html>
