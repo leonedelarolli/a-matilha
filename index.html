@@ -93,12 +93,6 @@
             100% { transform: scale(1) rotate(360deg); opacity: 1; }
         }
         
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-        
         .animate-slide-in {
             animation: slideIn 0.5s ease-out;
         }
@@ -107,25 +101,8 @@
             animation: celebrate 0.6s ease-out;
         }
         
-        .animate-shake {
-            animation: shake 0.5s ease-in-out;
-        }
-        
         .pulse-ring {
             animation: pulse-glow 2s infinite;
-        }
-        
-        .progress-ring {
-            transform: rotate(-90deg);
-        }
-        
-        .progress-ring-circle {
-            transition: stroke-dashoffset 0.5s ease;
-        }
-        
-        .locked-overlay {
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
         }
         
         .timer-display {
@@ -146,14 +123,6 @@
         @keyframes confetti-fall {
             0% { transform: translateY(0) rotate(0deg); opacity: 1; }
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-        
-        .dog-avatar {
-            transition: all 0.3s ease;
-        }
-        
-        .dog-avatar:hover {
-            transform: scale(1.05);
         }
         
         .pilar-card {
@@ -184,79 +153,6 @@
             outline: none;
         }
         
-        .camera-preview {
-            background: #1f2937;
-            border-radius: 16px;
-            overflow: hidden;
-        }
-        
-        .floating-action {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 50;
-        }
-        
-        .tab-active {
-            color: #059669;
-            border-bottom: 3px solid #059669;
-        }
-        
-        .level-badge {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
-        }
-        
-        .streak-flame {
-            animation: flicker 1.5s ease-in-out infinite alternate;
-        }
-        
-        @keyframes flicker {
-            0% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0.8; transform: scale(1.05); }
-        }
-        
-        .hidden-screen {
-            display: none !important;
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.4s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .success-checkmark {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #10b981;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            animation: scaleIn 0.5s ease-out;
-        }
-        
-        @keyframes scaleIn {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-        
-        .checkmark-path {
-            stroke-dasharray: 100;
-            stroke-dashoffset: 100;
-            animation: drawCheck 0.6s ease-out 0.3s forwards;
-        }
-        
-        @keyframes drawCheck {
-            to { stroke-dashoffset: 0; }
-        }
-        
         .loading-spinner {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #10b981;
@@ -269,17 +165,6 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-        
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-        
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
         }
         
         .toast {
@@ -309,6 +194,38 @@
         
         .toast.success {
             background: #10b981;
+        }
+        
+        .hidden-screen {
+            display: none !important;
+        }
+        
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            animation: scaleIn 0.5s ease-out;
+        }
+        
+        @keyframes scaleIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .checkmark-path {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawCheck 0.6s ease-out 0.3s forwards;
+        }
+        
+        @keyframes drawCheck {
+            to { stroke-dashoffset: 0; }
         }
     </style>
 </head>
@@ -359,8 +276,8 @@
             <form id="register-form" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nome de Usuário *</label>
-                    <input type="text" id="reg-username" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="@seunome" pattern="[a-zA-Z0-9_]+" title="Apenas letras, números e underline">
-                    <p class="text-xs text-gray-500 mt-1">Este será seu identificador único (apenas letras, números e _)</p>
+                    <input type="text" id="reg-username" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="@seunome" pattern="[a-zA-Z0-9_]+">
+                    <p class="text-xs text-gray-500 mt-1">Apenas letras, números e _</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
@@ -391,9 +308,6 @@
                 <div class="flex items-center gap-3">
                     <div class="relative">
                         <img id="user-avatar" src="https://ui-avatars.com/api/?name=User&background=10b981&color=fff" class="w-10 h-10 rounded-full border-2 border-white shadow-md object-cover">
-                        <button onclick="editProfile()" class="absolute -bottom-1 -right-1 bg-green-500 text-white p-1 rounded-full shadow-md">
-                            <i data-lucide="camera" class="w-3 h-3"></i>
-                        </button>
                     </div>
                     <div>
                         <p class="text-white/80 text-xs">Bem-vindo,</p>
@@ -463,10 +377,6 @@
                             <p class="text-xs text-gray-600">Estrelas</p>
                         </div>
                     </div>
-                    
-                    <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div id="level-progress" class="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
-                    </div>
                 </div>
             </div>
 
@@ -500,12 +410,6 @@
                                 <i data-lucide="lock" class="w-6 h-6 text-gray-400"></i>
                             </div>
                         </div>
-                        <div class="mt-3 pt-3 border-t border-gray-100">
-                            <div class="flex justify-between text-xs text-gray-600">
-                                <span>Próximo: <span id="siga-me-next">Daqui pra trás</span></span>
-                                <span class="text-green-600 font-medium" id="siga-me-stars">0★</span>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Pilar 2: Controle de Boca -->
@@ -530,12 +434,6 @@
                             </div>
                             <div id="controle-boca-lock" class="hidden">
                                 <i data-lucide="lock" class="w-6 h-6 text-gray-400"></i>
-                            </div>
-                        </div>
-                        <div class="mt-3 pt-3 border-t border-gray-100">
-                            <div class="flex justify-between text-xs text-gray-600">
-                                <span>Próximo: <span id="controle-boca-next">Criando interesse</span></span>
-                                <span class="text-orange-600 font-medium" id="controle-boca-stars">0★</span>
                             </div>
                         </div>
                     </div>
@@ -564,12 +462,6 @@
                                 <i data-lucide="lock" class="w-6 h-6 text-gray-400"></i>
                             </div>
                         </div>
-                        <div class="mt-3 pt-3 border-t border-gray-100">
-                            <div class="flex justify-between text-xs text-gray-600">
-                                <span>Meta: <span id="limitador-time">15</span> min relaxado</span>
-                                <span class="text-blue-600 font-medium" id="limitador-stars">0★</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -587,18 +479,6 @@
             </div>
             
             <form id="add-dog-form" class="p-6 space-y-4">
-                <div class="flex justify-center mb-4">
-                    <div class="relative">
-                        <div id="dog-photo-preview" class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
-                            <i data-lucide="dog" class="w-12 h-12 text-gray-400"></i>
-                        </div>
-                        <button type="button" onclick="triggerDogPhoto()" class="absolute bottom-0 right-0 bg-green-500 text-white p-2 rounded-full shadow-lg">
-                            <i data-lucide="camera" class="w-4 h-4"></i>
-                        </button>
-                        <input type="file" id="dog-photo-input" accept="image/*" capture="environment" class="hidden" onchange="handleDogPhoto(event)">
-                    </div>
-                </div>
-                
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nome do Cão *</label>
                     <input type="text" id="dog-name" required class="input-field w-full px-4 py-3 rounded-xl" placeholder="Ex: Thor">
@@ -621,11 +501,6 @@
                             <option value="true">Sim</option>
                         </select>
                     </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Microchip (opcional)</label>
-                    <input type="text" id="dog-chip" class="input-field w-full px-4 py-3 rounded-xl" placeholder="Número do chip">
                 </div>
                 
                 <button type="submit" id="add-dog-btn" class="btn-primary w-full py-4 rounded-xl text-white font-semibold text-lg mt-4 flex items-center justify-center gap-2">
@@ -655,9 +530,7 @@
                     <span id="training-pilar-name" class="text-green-700 font-medium">Siga-me</span>
                 </div>
                 <h3 id="training-phase-title" class="text-xl font-bold text-gray-900 mb-2">Daqui pra trás</h3>
-                <p id="training-phase-desc" class="text-gray-600 text-sm leading-relaxed">
-                    O cão não deve passar o condutor, apenas ficar ao lado ou para trás...
-                </p>
+                <p id="training-phase-desc" class="text-gray-600 text-sm leading-relaxed"></p>
             </div>
 
             <!-- Instruções Detalhadas -->
@@ -684,7 +557,6 @@
                             <i data-lucide="rotate-ccw" class="w-6 h-6"></i>
                         </button>
                     </div>
-                    <p class="text-xs text-gray-400 mt-4">Inicie apenas quando o cão estiver totalmente relaxado</p>
                 </div>
             </div>
 
@@ -758,12 +630,12 @@
     </div>
 
     <script>
-        // SUPABASE CONFIGURAÇÃO - SUBSTITUA COM SUAS CREDENCIAIS
+        // SUPABASE CONFIGURAÇÃO
         const SUPABASE_URL = 'https://kwnyrcrpbbhogdidnlbv.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_8nPa-MAvwOxJ8ddyN1A2bA_1sm4rw-l';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // DADOS E ESTADO
+        // ESTADO DO APP
         let currentUser = null;
         let dogs = [];
         let selectedDogId = null;
@@ -778,10 +650,8 @@
         const pilaresData = {
             'siga-me': {
                 name: 'Siga-me',
-                icon: 'footprints',
-                color: 'green',
                 phases: [
-                    { title: 'Daqui pra trás', desc: 'O cão não deve passar o condutor, apenas ficar ao lado ou para trás. Use guia longa (5-10m). Dê um baque e mude de direção se tentar passar ou se a guia estiver acabando.', steps: ['Use guia longa ou corda de 5-10m', 'Mantenha o cão ao seu lado ou atrás', 'Se tentar passar: baque seco na guia', 'Mude de direção abruptamente', 'Mantenha local calmo e seguro'] },
+                    { title: 'Daqui pra trás', desc: 'O cão não deve passar o condutor, apenas ficar ao lado ou para trás. Use guia longa (5-10m).', steps: ['Use guia longa ou corda de 5-10m', 'Mantenha o cão ao seu lado ou atrás', 'Se tentar passar: baque seco na guia', 'Mude de direção abruptamente', 'Mantenha local calmo e seguro'] },
                     { title: 'Distância reduzida', desc: 'Encurtar a guia e corrigir sempre que o cão tentar correr na direção de animais ou outras distrações.', steps: ['Encurte a guia progressivamente', 'Fique atento a distrações', 'Corrija com baque seco ao tentar correr', 'Mantenha atenção total no cão', 'Não faça cabo de guerra'] },
                     { title: 'Andando próximo e mais atento', desc: 'Cão bem próximo. Corrigir se tentar cheirar o chão. Atenção total no dono.', steps: ['Mantenha o cão muito próximo', 'Corrija se tentar cheirar o chão', 'Exija atenção total em você', 'Use correções rápidas e secas', 'Coleira comum > colar de elos > prong > e-collar'] },
                     { title: 'Aplicando o junto', desc: 'Cão ao lado o tempo todo e atento. O dono deve dizer "JUNTO" antes de começar.', steps: ['Diga "JUNTO" antes de iniciar', 'Cão deve ficar ao lado o tempo todo', 'Mantenha atenção constante', 'Corrija desvios imediatamente', 'Reforce o comando verbal'] },
@@ -791,10 +661,8 @@
             },
             'controle-boca': {
                 name: 'Controle de Boca',
-                icon: 'circle-dot',
-                color: 'orange',
                 phases: [
-                    { title: 'Criando interesse', desc: 'Mostrar o mordedor e incomodar até agarrar. Se não pegar, use gelo. Se pegar, repetir 3 vezes. Soltar com asfixia mecânica ou mostrando outro brinquedo.', steps: ['Mostre o mordedor/bolinha', 'Incomode até ele agarrar', 'Use gelo se não mostrar interesse', 'Repita 3 vezes se pegar', 'Faça soltar com asfixia mecânica'] },
+                    { title: 'Criando interesse', desc: 'Mostrar o mordedor e incomodar até agarrar. Se não pegar, use gelo. Se pegar, repetir 3 vezes.', steps: ['Mostre o mordedor/bolinha', 'Incomode até ele agarrar', 'Use gelo se não mostrar interesse', 'Repita 3 vezes se pegar', 'Faça soltar com asfixia mecânica'] },
                     { title: 'Aumentando o interesse', desc: 'O cão já quer o brinquedo, realizar a ação apenas 3 vezes no dia.', steps: ['Confirme que o cão quer o brinquedo', 'Realize apenas 3 vezes no dia', 'Mantenha o interesse alto', 'Não exagere na repetição', 'Finalize enquanto quer mais'] },
                     { title: 'Repetindo com comandos', desc: 'Corrigir para a mordida ter boca cheia no objeto. Seguir a ordem: "Cuida" > "Pega" > "Deixa".', steps: ['Diga "CUIDA" (atenção)', 'Comande "PEGA" (agarrar)', 'Ordene "DEIXA" (soltar)', 'Corrija para mordida completa', 'Reforce a sequência'] },
                     { title: 'Busca', desc: 'Lançar a bolinha, fazer correr, trazer de volta usando os mesmos comandos da fase anterior.', steps: ['Lance a bolinha', 'Incentive a busca', 'Chame de volta', 'Use "CUIDA" > "PEGA" > "DEIXA"', 'Aumente gradativamente a distância'] },
@@ -803,27 +671,25 @@
             },
             'comando-limitador': {
                 name: 'Comando Limitador',
-                icon: 'timer',
-                color: 'blue',
                 phases: [
-                    { title: 'Nível 1 - 15 minutos', desc: 'Local sem barulhos. O cão deve ficar totalmente relaxado e alheio a estímulos por 15 minutos.', time: 15, level: 1, env: 'sem barulhos' },
-                    { title: 'Nível 1 - 20 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 20 minutos.', time: 20, level: 1, env: 'sem barulhos' },
-                    { title: 'Nível 1 - 30 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 30 minutos.', time: 30, level: 1, env: 'sem barulhos' },
-                    { title: 'Nível 1 - 50 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 50 minutos.', time: 50, level: 1, env: 'sem barulhos' },
-                    { title: 'Nível 1 - 80 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 80 minutos.', time: 80, level: 1, env: 'sem barulhos' },
-                    { title: 'Nível 1 - 120 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 120 minutos.', time: 120, level: 1, env: 'sem barulhos' },
-                    { title: 'Nível 2 - 15 minutos', desc: 'Local com pouco barulho. O cão deve ficar totalmente relaxado por 15 minutos.', time: 15, level: 2, env: 'pouco barulho' },
-                    { title: 'Nível 2 - 20 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 20 minutos.', time: 20, level: 2, env: 'pouco barulho' },
-                    { title: 'Nível 2 - 30 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 30 minutos.', time: 30, level: 2, env: 'pouco barulho' },
-                    { title: 'Nível 2 - 50 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 50 minutos.', time: 50, level: 2, env: 'pouco barulho' },
-                    { title: 'Nível 2 - 80 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 80 minutos.', time: 80, level: 2, env: 'pouco barulho' },
-                    { title: 'Nível 2 - 120 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 120 minutos.', time: 120, level: 2, env: 'pouco barulho' },
-                    { title: 'Nível 3 - 15 minutos', desc: 'Local barulhento. O cão deve ficar totalmente relaxado por 15 minutos.', time: 15, level: 3, env: 'barulhento' },
-                    { title: 'Nível 3 - 20 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 20 minutos.', time: 20, level: 3, env: 'barulhento' },
-                    { title: 'Nível 3 - 30 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 30 minutos.', time: 30, level: 3, env: 'barulhento' },
-                    { title: 'Nível 3 - 50 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 50 minutos.', time: 50, level: 3, env: 'barulhento' },
-                    { title: 'Nível 3 - 80 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 80 minutos.', time: 80, level: 3, env: 'barulhento' },
-                    { title: 'Nível 3 - 120 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 120 minutos.', time: 120, level: 3, env: 'barulhento' }
+                    { title: 'Nível 1 - 15 minutos', desc: 'Local sem barulhos. O cão deve ficar totalmente relaxado e alheio a estímulos por 15 minutos.', time: 15, level: 1 },
+                    { title: 'Nível 1 - 20 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 20 minutos.', time: 20, level: 1 },
+                    { title: 'Nível 1 - 30 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 30 minutos.', time: 30, level: 1 },
+                    { title: 'Nível 1 - 50 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 50 minutos.', time: 50, level: 1 },
+                    { title: 'Nível 1 - 80 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 80 minutos.', time: 80, level: 1 },
+                    { title: 'Nível 1 - 120 minutos', desc: 'Local sem barulhos. Mantenha o relaxamento por 120 minutos.', time: 120, level: 1 },
+                    { title: 'Nível 2 - 15 minutos', desc: 'Local com pouco barulho. O cão deve ficar totalmente relaxado por 15 minutos.', time: 15, level: 2 },
+                    { title: 'Nível 2 - 20 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 20 minutos.', time: 20, level: 2 },
+                    { title: 'Nível 2 - 30 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 30 minutos.', time: 30, level: 2 },
+                    { title: 'Nível 2 - 50 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 50 minutos.', time: 50, level: 2 },
+                    { title: 'Nível 2 - 80 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 80 minutos.', time: 80, level: 2 },
+                    { title: 'Nível 2 - 120 minutos', desc: 'Local com pouco barulho. Mantenha o relaxamento por 120 minutos.', time: 120, level: 2 },
+                    { title: 'Nível 3 - 15 minutos', desc: 'Local barulhento. O cão deve ficar totalmente relaxado por 15 minutos.', time: 15, level: 3 },
+                    { title: 'Nível 3 - 20 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 20 minutos.', time: 20, level: 3 },
+                    { title: 'Nível 3 - 30 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 30 minutos.', time: 30, level: 3 },
+                    { title: 'Nível 3 - 50 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 50 minutos.', time: 50, level: 3 },
+                    { title: 'Nível 3 - 80 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 80 minutos.', time: 80, level: 3 },
+                    { title: 'Nível 3 - 120 minutos', desc: 'Local barulhento. Mantenha o relaxamento por 120 minutos.', time: 120, level: 3 }
                 ]
             }
         };
@@ -839,7 +705,11 @@
             try {
                 const { data: { session }, error } = await supabase.auth.getSession();
                 
-                if (error) throw error;
+                if (error) {
+                    console.error('Erro ao verificar sessão:', error);
+                    showScreen('login-screen');
+                    return;
+                }
                 
                 if (session) {
                     currentUser = session.user;
@@ -850,21 +720,39 @@
                     showScreen('login-screen');
                 }
             } catch (error) {
-                console.error('Erro ao verificar autenticação:', error);
-                showToast('Erro ao conectar. Tente novamente.', 'error');
+                console.error('Erro geral:', error);
                 showScreen('login-screen');
             }
         }
 
         async function loadUserProfile() {
             try {
-                const { data, error } = await supabase
+                // Verificar se perfil existe, se não, criar
+                let { data, error } = await supabase
                     .from('profiles')
                     .select('*')
                     .eq('id', currentUser.id)
                     .single();
                 
-                if (error && error.code !== 'PGRST116') throw error;
+                if (error && error.code === 'PGRST116') {
+                    // Perfil não existe, criar manualmente
+                    const username = currentUser.user_metadata?.username || currentUser.email.split('@')[0];
+                    const { data: newProfile, error: createError } = await supabase
+                        .from('profiles')
+                        .insert([{
+                            id: currentUser.id,
+                            username: username,
+                            email: currentUser.email,
+                            avatar_url: `https://ui-avatars.com/api/?name=${username}&background=10b981&color=fff`
+                        }])
+                        .select()
+                        .single();
+                    
+                    if (createError) throw createError;
+                    data = newProfile;
+                } else if (error) {
+                    throw error;
+                }
                 
                 if (data) {
                     document.getElementById('username-display').textContent = '@' + data.username;
@@ -874,6 +762,7 @@
                 }
             } catch (error) {
                 console.error('Erro ao carregar perfil:', error);
+                showToast('Erro ao carregar perfil', 'error');
             }
         }
 
@@ -902,7 +791,8 @@
                     await loadDogs();
                     showToast('Login realizado com sucesso!', 'success');
                 } catch (error) {
-                    showToast(error.message === 'Invalid login credentials' ? 'E-mail ou senha incorretos' : 'Erro ao fazer login', 'error');
+                    console.error('Erro login:', error);
+                    showToast('E-mail ou senha incorretos', 'error');
                     btn.disabled = false;
                     btn.innerHTML = '<span>Entrar</span>';
                 }
@@ -920,17 +810,7 @@
                     const email = document.getElementById('reg-email').value;
                     const password = document.getElementById('reg-password').value;
                     
-                    // Verificar se username já existe
-                    const { data: existingUser } = await supabase
-                        .from('profiles')
-                        .select('username')
-                        .eq('username', username)
-                        .single();
-                    
-                    if (existingUser) {
-                        throw new Error('Nome de usuário já existe');
-                    }
-                    
+                    // Criar usuário no Auth
                     const { data, error } = await supabase.auth.signUp({
                         email,
                         password,
@@ -943,24 +823,30 @@
                     
                     if (error) throw error;
                     
-                    // Criar perfil
-                    const { error: profileError } = await supabase
-                        .from('profiles')
-                        .insert([{
-                            id: data.user.id,
-                            username: username,
-                            email: email,
-                            avatar_url: `https://ui-avatars.com/api/?name=${username}&background=10b981&color=fff`
-                        }]);
-                    
-                    if (profileError) throw profileError;
-                    
-                    currentUser = data.user;
-                    await loadUserProfile();
-                    showScreen('main-screen');
-                    showToast('Conta criada com sucesso!', 'success');
+                    if (data.user) {
+                        // Criar perfil manualmente (sem trigger)
+                        const { error: profileError } = await supabase
+                            .from('profiles')
+                            .insert([{
+                                id: data.user.id,
+                                username: username,
+                                email: email,
+                                avatar_url: `https://ui-avatars.com/api/?name=${username}&background=10b981&color=fff`
+                            }]);
+                        
+                        if (profileError) {
+                            console.error('Erro ao criar perfil:', profileError);
+                            // Se der erro no perfil, tentar fazer login mesmo assim
+                        }
+                        
+                        currentUser = data.user;
+                        await loadUserProfile();
+                        showScreen('main-screen');
+                        showToast('Conta criada com sucesso!', 'success');
+                    }
                 } catch (error) {
-                    showToast(error.message, 'error');
+                    console.error('Erro registro:', error);
+                    showToast(error.message || 'Erro ao criar conta. Tente novamente.', 'error');
                     btn.disabled = false;
                     btn.innerHTML = '<span>Criar Conta</span>';
                 }
@@ -974,47 +860,22 @@
                 btn.innerHTML = '<div class="loading-spinner"></div>';
                 
                 try {
-                    const photoFile = document.getElementById('dog-photo-input').files[0];
-                    let photoUrl = null;
-                    
-                    // Upload foto se existir
-                    if (photoFile) {
-                        const fileName = `${currentUser.id}/${Date.now()}_${photoFile.name}`;
-                        const { data: uploadData, error: uploadError } = await supabase.storage
-                            .from('dog-photos')
-                            .upload(fileName, photoFile);
-                        
-                        if (uploadError) throw uploadError;
-                        
-                        const { data: { publicUrl } } = supabase.storage
-                            .from('dog-photos')
-                            .getPublicUrl(fileName);
-                        
-                        photoUrl = publicUrl;
-                    }
-                    
                     const dogData = {
                         user_id: currentUser.id,
                         name: document.getElementById('dog-name').value,
                         breed: document.getElementById('dog-breed').value,
                         age: parseFloat(document.getElementById('dog-age').value),
                         neutered: document.getElementById('dog-neutered').value === 'true',
-                        chip: document.getElementById('dog-chip').value || null,
-                        photo_url: photoUrl,
                         siga_me_phase: 0,
                         siga_me_stars: 0,
-                        siga_me_last_training: null,
                         controle_boca_phase: 0,
                         controle_boca_stars: 0,
-                        controle_boca_last_training: null,
                         comando_limitador_phase: 0,
                         comando_limitador_stars: 0,
-                        comando_limitador_last_training: null,
                         comando_limitador_level: 1,
                         total_stars: 0,
                         level: 1,
-                        streak: 0,
-                        last_training_date: null
+                        streak: 0
                     };
                     
                     const { data, error } = await supabase
@@ -1033,15 +894,12 @@
                         selectDog(data.id);
                     }
                     
-                    // Reset form
                     document.getElementById('add-dog-form').reset();
-                    document.getElementById('dog-photo-preview').innerHTML = '<i data-lucide="dog" class="w-12 h-12 text-gray-400"></i>';
-                    lucide.createIcons();
                     showToast(`${data.name} adicionado à matilha!`, 'success');
                     
                 } catch (error) {
                     console.error('Erro ao adicionar cão:', error);
-                    showToast('Erro ao adicionar cão. Tente novamente.', 'error');
+                    showToast('Erro ao adicionar cão', 'error');
                 } finally {
                     btn.disabled = false;
                     btn.innerHTML = '<span>Adicionar à Matilha</span>';
@@ -1062,10 +920,7 @@
                 screen.classList.add('hidden-screen');
             });
             document.getElementById(screenId).classList.remove('hidden-screen');
-            
-            if (screenId === 'main-screen') {
-                lucide.createIcons();
-            }
+            lucide.createIcons();
         }
 
         async function loadDogs() {
@@ -1117,13 +972,8 @@
                 
                 div.innerHTML = `
                     <div class="relative">
-                        <div class="w-20 h-20 rounded-2xl overflow-hidden border-4 ${isSelected ? 'border-white shadow-lg' : 'border-white/50'}">
-                            ${dog.photo_url ? 
-                                `<img src="${dog.photo_url}" class="w-full h-full object-cover">` : 
-                                `<div class="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                                    <i data-lucide="dog" class="w-8 h-8 text-white"></i>
-                                </div>`
-                            }
+                        <div class="w-20 h-20 rounded-2xl overflow-hidden border-4 ${isSelected ? 'border-white shadow-lg' : 'border-white/50'} bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                            <i data-lucide="dog" class="w-8 h-8 text-white"></i>
                         </div>
                         ${isSelected ? '<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-yellow-400 rounded-full"></div>' : ''}
                     </div>
@@ -1155,79 +1005,64 @@
             document.getElementById('current-streak').textContent = dog.streak || 0;
             document.getElementById('total-stars').textContent = dog.total_stars || 0;
             
-            // Calcular progresso do nível
-            const totalPhases = 6 * 3;
-            const completedPhases = completedTrainings;
-            const progressPercent = Math.min((completedPhases / totalPhases) * 100, 100);
-            document.getElementById('level-progress').style.width = progressPercent + '%';
-            
-            // Atualizar cards dos pilares
-            updatePilarStatus('siga-me', {
-                currentPhase: dog.siga_me_phase || 0,
-                stars: dog.siga_me_stars || 0,
-                lastTraining: dog.siga_me_last_training
-            });
-            updatePilarStatus('controle-boca', {
-                currentPhase: dog.controle_boca_phase || 0,
-                stars: dog.controle_boca_stars || 0,
-                lastTraining: dog.controle_boca_last_training
-            });
-            updatePilarStatus('comando-limitador', {
-                currentPhase: dog.comando_limitador_phase || 0,
-                stars: dog.comando_limitador_stars || 0,
-                lastTraining: dog.comando_limitador_last_training,
-                currentLevel: dog.comando_limitador_level || 1
-            });
+            updatePilarStatus('siga-me', dog);
+            updatePilarStatus('controle-boca', dog);
+            updatePilarStatus('comando-limitador', dog);
         }
 
-        function updatePilarStatus(pilarKey, progress) {
-            const phaseEl = document.getElementById(`${pilarKey}-phase`);
-            const statusEl = document.getElementById(`${pilarKey}-status`);
-            const lockEl = document.getElementById(`${pilarKey}-lock`);
-            const nextEl = document.getElementById(`${pilarKey}-next`);
-            const starsEl = document.getElementById(`${pilarKey}-stars`);
-            const cardEl = document.querySelector(`[onclick="openPilar('${pilarKey}')"]`);
+        function updatePilarStatus(pilarKey, dog) {
+            let currentPhase, stars, lastTraining, currentLevel = 1;
+            
+            if (pilarKey === 'siga-me') {
+                currentPhase = dog.siga_me_phase || 0;
+                stars = dog.siga_me_stars || 0;
+                lastTraining = dog.siga_me_last_training;
+            } else if (pilarKey === 'controle-boca') {
+                currentPhase = dog.controle_boca_phase || 0;
+                stars = dog.controle_boca_stars || 0;
+                lastTraining = dog.controle_boca_last_training;
+            } else {
+                currentPhase = dog.comando_limitador_phase || 0;
+                stars = dog.comando_limitador_stars || 0;
+                lastTraining = dog.comando_limitador_last_training;
+                currentLevel = dog.comando_limitador_level || 1;
+            }
             
             const pilarData = pilaresData[pilarKey];
-            const currentPhase = progress.currentPhase || 0;
             const maxPhases = pilarKey === 'comando-limitador' ? 18 : pilarData.phases.length;
             
-            phaseEl.textContent = Math.min(currentPhase + 1, maxPhases);
-            starsEl.textContent = (progress.stars || 0) + '★';
+            document.getElementById(`${pilarKey}-phase`).textContent = Math.min(currentPhase + 1, maxPhases);
+            document.getElementById(`${pilarKey}-stars`).textContent = stars + '★';
             
-            // Verificar se está bloqueado (cooldown de 24h)
-            const lastTraining = progress.lastTraining ? new Date(progress.lastTraining) : null;
+            const lastTrainingDate = lastTraining ? new Date(lastTraining) : null;
             const now = new Date();
-            const hoursSinceLastTraining = lastTraining ? (now - lastTraining) / (1000 * 60 * 60) : 999;
-            const isLocked = lastTraining && hoursSinceLastTraining < 24;
+            const hoursSinceLastTraining = lastTrainingDate ? (now - lastTrainingDate) / (1000 * 60 * 60) : 999;
+            const isLocked = lastTrainingDate && hoursSinceLastTraining < 24;
+            
+            const statusEl = document.getElementById(`${pilarKey}-status`);
+            const lockEl = document.getElementById(`${pilarKey}-lock`);
+            const cardEl = document.querySelector(`[onclick="openPilar('${pilarKey}')"]`);
             
             if (currentPhase >= maxPhases) {
                 statusEl.textContent = 'Concluído!';
                 statusEl.className = 'text-xs text-green-600 font-bold';
-                nextEl.textContent = 'Todas as fases';
                 lockEl.classList.add('hidden');
-                cardEl.classList.remove('locked');
             } else if (isLocked) {
                 statusEl.textContent = 'Disponível amanhã';
                 statusEl.className = 'text-xs text-orange-500';
                 lockEl.classList.remove('hidden');
                 cardEl.classList.add('locked');
-                const nextPhase = pilarData.phases[currentPhase] || pilarData.phases[pilarData.phases.length - 1];
-                nextEl.textContent = nextPhase.title.split('-')[0].trim();
             } else {
                 statusEl.textContent = 'Disponível agora';
                 statusEl.className = 'text-xs text-green-600';
                 lockEl.classList.add('hidden');
                 cardEl.classList.remove('locked');
-                const nextPhase = pilarData.phases[currentPhase];
-                nextEl.textContent = nextPhase.title.split('-')[0].trim();
             }
             
-            // Atualizar nível do limitador
             if (pilarKey === 'comando-limitador') {
-                document.getElementById('limitador-level').textContent = progress.currentLevel || 1;
-                const currentLimitadorPhase = pilarData.phases[currentPhase] || pilarData.phases[0];
-                document.getElementById('limitador-time').textContent = currentLimitadorPhase.time;
+                document.getElementById('limitador-level').textContent = currentLevel;
+                const phaseData = pilarData.phases[currentPhase] || pilarData.phases[0];
+                document.getElementById('limitador-time').textContent = phaseData.time;
             }
         }
 
@@ -1280,7 +1115,6 @@
             document.getElementById('training-phase-title').textContent = phaseData.title;
             document.getElementById('training-phase-desc').textContent = phaseData.desc;
             
-            // Renderizar passos
             const stepsContainer = document.getElementById('training-steps');
             stepsContainer.innerHTML = '';
             phaseData.steps.forEach((step, index) => {
@@ -1293,7 +1127,6 @@
                 stepsContainer.appendChild(stepDiv);
             });
             
-            // Configurar timer se for comando limitador
             const timerContainer = document.getElementById('timer-container');
             const completeBtn = document.getElementById('complete-btn');
             
@@ -1322,7 +1155,6 @@
             currentTraining = null;
         }
 
-        // TIMER FUNCTIONS
         function toggleTimer() {
             if (timerRunning) {
                 stopTimer();
@@ -1346,7 +1178,6 @@
                     document.getElementById('complete-btn').classList.remove('opacity-50', 'cursor-not-allowed');
                     document.getElementById('complete-btn').innerHTML = '<i data-lucide="check-circle" class="w-6 h-6"></i> Concluir Treino';
                     lucide.createIcons();
-                    
                     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
                 }
             }, 1000);
@@ -1372,7 +1203,6 @@
         function updateTimerDisplay() {
             const minutes = Math.floor(timerSeconds / 60);
             const seconds = timerSeconds % 60;
-            
             document.getElementById('timer-display').textContent = 
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
@@ -1381,7 +1211,6 @@
             }
         }
 
-        // RATING FUNCTIONS
         function showRating() {
             if (currentTraining.pilar === 'comando-limitador' && timerSeconds < requiredTimerSeconds) {
                 showToast('Complete o tempo mínimo de relaxamento!', 'error');
@@ -1427,13 +1256,11 @@
                 const dog = dogs.find(d => d.id === selectedDogId);
                 const now = new Date().toISOString();
                 
-                // Preparar dados de atualização
                 const updateData = {
                     total_stars: (dog.total_stars || 0) + currentRating,
                     last_training_date: now
                 };
                 
-                // Atualizar campos específicos do pilar
                 if (currentTraining.pilar === 'siga-me') {
                     updateData.siga_me_last_training = now;
                     updateData.siga_me_stars = (dog.siga_me_stars || 0) + currentRating;
@@ -1452,14 +1279,12 @@
                     if (currentRating === 5) {
                         const newPhase = (dog.comando_limitador_phase || 0) + 1;
                         updateData.comando_limitador_phase = newPhase;
-                        // Avançar nível a cada 6 fases
                         if (newPhase % 6 === 0 && newPhase < 18) {
                             updateData.comando_limitador_level = (dog.comando_limitador_level || 1) + 1;
                         }
                     }
                 }
                 
-                // Calcular streak
                 const lastDate = dog.last_training_date ? new Date(dog.last_training_date).toDateString() : null;
                 const today = new Date().toDateString();
                 const yesterday = new Date();
@@ -1471,13 +1296,11 @@
                     updateData.streak = 1;
                 }
                 
-                // Calcular nível do cão
                 const totalPhases = (updateData.siga_me_phase || dog.siga_me_phase || 0) + 
                                    (updateData.controle_boca_phase || dog.controle_boca_phase || 0) + 
                                    (updateData.comando_limitador_phase || dog.comando_limitador_phase || 0);
                 updateData.level = Math.floor(totalPhases / 3) + 1;
                 
-                // Atualizar no Supabase
                 const { data, error } = await supabase
                     .from('dogs')
                     .update(updateData)
@@ -1487,11 +1310,9 @@
                 
                 if (error) throw error;
                 
-                // Atualizar local
                 const index = dogs.findIndex(d => d.id === selectedDogId);
                 dogs[index] = data;
                 
-                // Mostrar sucesso
                 document.getElementById('rating-modal').classList.add('hidden-screen');
                 document.getElementById('success-stars').textContent = currentRating;
                 document.getElementById('success-modal').classList.remove('hidden-screen');
@@ -1501,7 +1322,7 @@
                 
             } catch (error) {
                 console.error('Erro ao salvar treino:', error);
-                showToast('Erro ao salvar treino. Tente novamente.', 'error');
+                showToast('Erro ao salvar treino', 'error');
                 btn.disabled = false;
                 btn.innerHTML = 'Confirmar Avaliação';
             }
@@ -1515,7 +1336,6 @@
                     confetti.className = 'confetti';
                     confetti.style.left = Math.random() * 100 + 'vw';
                     confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
                     document.body.appendChild(confetti);
                     setTimeout(() => confetti.remove(), 3000);
                 }, i * 30);
@@ -1528,7 +1348,6 @@
             updateDogProgress();
         }
 
-        // MODAL FUNCTIONS
         function showAddDogModal() {
             document.getElementById('add-dog-modal').classList.remove('hidden-screen');
             lucide.createIcons();
@@ -1536,61 +1355,6 @@
 
         function closeModal(modalId) {
             document.getElementById(modalId).classList.add('hidden-screen');
-        }
-
-        function triggerDogPhoto() {
-            document.getElementById('dog-photo-input').click();
-        }
-
-        function handleDogPhoto(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.getElementById('dog-photo-preview').innerHTML = 
-                        `<img src="${e.target.result}" class="w-full h-full object-cover">`;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function editProfile() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                try {
-                    const fileName = `avatars/${currentUser.id}_${Date.now()}.${file.name.split('.').pop()}`;
-                    
-                    const { error: uploadError } = await supabase.storage
-                        .from('avatars')
-                        .upload(fileName, file);
-                    
-                    if (uploadError) throw uploadError;
-                    
-                    const { data: { publicUrl } } = supabase.storage
-                        .from('avatars')
-                        .getPublicUrl(fileName);
-                    
-                    const { error: updateError } = await supabase
-                        .from('profiles')
-                        .update({ avatar_url: publicUrl })
-                        .eq('id', currentUser.id);
-                    
-                    if (updateError) throw updateError;
-                    
-                    document.getElementById('user-avatar').src = publicUrl;
-                    showToast('Foto de perfil atualizada!', 'success');
-                    
-                } catch (error) {
-                    console.error('Erro ao atualizar foto:', error);
-                    showToast('Erro ao atualizar foto', 'error');
-                }
-            };
-            input.click();
         }
 
         async function logout() {
@@ -1606,18 +1370,13 @@
             }
         }
 
-        // Toast notification
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.className = `toast ${type} show`;
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Fechar modais ao clicar fora
         window.onclick = function(event) {
             if (event.target.classList.contains('fixed')) {
                 event.target.classList.add('hidden-screen');
